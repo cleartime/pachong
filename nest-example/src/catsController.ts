@@ -5,7 +5,7 @@ interface Cat {
   age: number;
   breed: string;
 }
-@Controller('cats')
+@Controller('cat')
 export class CatsController {
   constructor(private catsService: CatsService) {}
 
