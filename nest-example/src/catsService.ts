@@ -12,7 +12,10 @@ export class CatsService {
     this.cats.push(cat);
   }
 
-  findAll(): Cat[] {
-    return this.cats;
+  findAll() {
+    return {
+      a: 1,
+      b: 2,
+    };
   }
 }

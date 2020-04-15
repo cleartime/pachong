@@ -5,7 +5,7 @@ interface Cat {
   age: number;
   breed: string;
 }
-@Controller('cat')
+@Controller('cats')
 export class CatsController {
   constructor(private catsService: CatsService) {}
 
@@ -15,7 +15,7 @@ export class CatsController {
   }
 
   @Get()
-  async findAll(): Promise<Cat[]> {
+  async findAll(){
     return this.catsService.findAll();
   }
 }
