@@ -1,4 +1,4 @@
-import { Controller, Get, Res, HttpStatus, Param, NotFoundException, Post, Body, Query, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Res, HttpStatus, Param, NotFoundException, Post, Body, Query } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreatePostDTO } from '../dto/create-post.dto';
 import { ValidateObjectId } from '../shared/pipes/validate-object-id.pipes';
@@ -29,6 +29,30 @@ export class BlogController {
         return res.status(HttpStatus.OK).json({
             message: "Post has been submitted successfully!",
             post: newPost
+        })
+    }
+    @Post('/edit')
+    async editPost(
+        @Res() res,
+        @Query('postID', new ValidateObjectId()) postID,
+        @Body() createPostDTO: CreatePostDTO
+    ) {
+        const editedPost = await this.blogService.editPost(postID, createPostDTO);
+        if (!editedPost) throw new NotFoundException('Post does not exist!');
+        return res.status(HttpStatus.OK).json({
+            message: 'Post has been successfully updated',
+            post: editedPost
+        })
+    }
+
+
+    @Post('/delete')
+    async deletePost(@Res() res, @Query('postID', new ValidateObjectId()) postID) {
+        const deletedPost = await this.blogService.deletePost(postID);
+        if (!deletedPost) throw new NotFoundException('Post does not exist!');
+        return res.status(HttpStatus.OK).json({
+            message: 'Post has been deleted!',
+            post: deletedPost
         })
     }
 }
