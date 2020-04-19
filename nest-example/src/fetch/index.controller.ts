@@ -8,7 +8,7 @@ export class IndexController {
   findAll2() {
     return {
       sfddsf:2,
-      sdfds:3
+      sdfds:32
     };
   }
   @Get()
