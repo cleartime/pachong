@@ -15,7 +15,7 @@ export class CatsService {
   findAll() {
     return {
       a: 13,
-      b: 2,
+      b: 22,
     };
   }
 }
