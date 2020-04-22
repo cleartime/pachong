@@ -6,6 +6,7 @@ const selectors = [
   'div[id$="-KcazEUq"] article .dfo-widget-sm a',
 ];
 export const login = async function() {
+  debugger
   console.log('打开网站');
   const browser = await puppeteer.launch({
     ignoreHTTPSErrors: true,
@@ -16,8 +17,8 @@ export const login = async function() {
   const page = await browser.newPage();
   await page.setJavaScriptEnabled(true);
   await page.goto('https://www.acfun.cn/login/');
-  const accountswitch = await page.$('#login-account-switch');
-  await accountswitch.click();
+  const accountswitchx = await page.$x('//*[@id="login-account-switch"]');
+  await accountswitchx[0].click();
   const account = await page.$('#ipt-account-login');
   await account.focus();
   await page.keyboard.type('17621218285');
@@ -27,9 +28,11 @@ export const login = async function() {
   const btn = await page.$('.btn-login');
   await btn.click();
   await page.waitFor(1000);
-  await page.screenshot({ path: 'example.png' });
-  await browser.close();
-  console.log('关闭网站');
+  //*[@id="header-guide"]/li[6]/div/ul/li[2]/a
+  await page.goto('https://member.acfun.cn/post-article')
+  // await page.screenshot({ path: 'example.png' });
+  // await browser.close();
+  // console.log('关闭网站');
 
   //延时函数
   // function sleep(delay) {
