@@ -8,9 +8,10 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY . .
 RUN npm config set registry http://registry.npm.taobao.org/
+RUN npm config set puppeteer_download_host=https://npm.taobao.org/mirrors
 RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
 # Bundle app source
-EXPOSE 8080
+EXPOSE 9229
 CMD [ "npm", "run", "start:dev" ]
