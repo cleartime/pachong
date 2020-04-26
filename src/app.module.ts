@@ -13,7 +13,7 @@ import { BlogModule } from './blog/blog.module';
       useNewUrlParser: true,
     }),
     FetchModule,
-    BlogModule,
+    // BlogModule,
   ],
   controllers: [AppController, CatsController],
   providers: [AppService, CatsService],
