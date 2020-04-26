@@ -1,16 +1,16 @@
-import { async } from "rxjs/internal/scheduler/async";
 const path = require('path');
-function resolve(dir) {
-  return path.join(__dirname, dir);
-}
 const puppeteer = require('puppeteer');
 const Tesseract = require('tesseract.js');
 
+function resolve(dir) {
+  return path.join(__dirname, dir);
+}
 const initialPage = 'https://statsregnskapet.dfo.no/departementer';
 const selectors = [
   'div[id$="-bVMpYP"] article a',
   'div[id$="-KcazEUq"] article .dfo-widget-sm a',
 ];
+
 export const geekLogin = async function() {
   // debugger
   console.log('打开网站');
@@ -25,7 +25,7 @@ export const geekLogin = async function() {
   await page.goto('https://geekhub.com/users/sign_in');
   const account = await page.$x('//*[@id="new_user"]/div[1]/input[1]');
   await account[0].focus();
-  await page.keyboard.type('1047105447@qq.com');
+  await page.keyboard.type('1');
 
   // const pwd = await page.$x('//*[@id="new_user"]/div[1]/input[2]');
   // await pwd[0].focus();
@@ -37,12 +37,12 @@ export const geekLogin = async function() {
   //   console.log(test);
   //   return document.querySelector('#new_user')
   // }, Tesseract);
-  const png = require('/abc.png');
-  const test = await  Tesseract.recognize(
-    png,
-    'eng'
-  )
-  console.log(test)
+  // const png = require('/public/abc.png');
+  const test = await Tesseract.recognize(
+    resolve('../../public/abc.png'),
+    'eng',
+  );
+  console.log(test);
   debugger;
   // const test = await Tesseract.recognize(display, {
   //   lang: 'eng',
