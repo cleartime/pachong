@@ -1,5 +1,8 @@
 import { async } from "rxjs/internal/scheduler/async";
-
+const path = require('path');
+function resolve(dir) {
+  return path.join(__dirname, dir);
+}
 const puppeteer = require('puppeteer');
 const Tesseract = require('tesseract.js');
 
@@ -27,19 +30,19 @@ export const geekLogin = async function() {
   // const pwd = await page.$x('//*[@id="new_user"]/div[1]/input[2]');
   // await pwd[0].focus();
   // await page.keyboard.type('mmwybzd555');
-  const display = await page.$('#new_user');
-  const documentSize = await page.evaluate(async(Tesseract) => {
-    console.log(Tesseract);
-    // const test = await Tesseract.recognize(
-    //   document.querySelector('#new_user'),
-    //   {
-    //     lang: 'eng',
-    //   },
-    // );
-    // console.log(test);
-    return document.querySelector('#new_user')
-  }, Tesseract);
-  console.log(documentSize)
+  // const display = await page.$('#new_user');
+  // const documentSize = await page.evaluate(async(Tesseract) => {
+  //   console.log(Tesseract);
+  //   const test = await Tesseract.recognize('data:image\/([a-zA-Z]*);base64,([^"]*)');
+  //   console.log(test);
+  //   return document.querySelector('#new_user')
+  // }, Tesseract);
+  const png = require('/abc.png');
+  const test = await  Tesseract.recognize(
+    png,
+    'eng'
+  )
+  console.log(test)
   debugger;
   // const test = await Tesseract.recognize(display, {
   //   lang: 'eng',
