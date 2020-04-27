@@ -1,3 +1,4 @@
+import { getCode } from '../ocr/getCode'
 const path = require('path');
 const puppeteer = require('puppeteer');
 const Tesseract = require('tesseract.js');
@@ -10,6 +11,7 @@ const selectors = [
   'div[id$="-bVMpYP"] article a',
   'div[id$="-KcazEUq"] article .dfo-widget-sm a',
 ];
+
 
 export const geekLogin = async function() {
   // debugger
@@ -26,24 +28,28 @@ export const geekLogin = async function() {
   const account = await page.$x('//*[@id="new_user"]/div[1]/input[1]');
   await account[0].focus();
   await page.keyboard.type('1');
-
+  const user = await page.$('.h-8');
+  //调用页面内Dom对象的 screenshot 方法进行截图
+  const png = await user.screenshot();
+  const code = await getCode(png);
+  console.log(code);
   // const pwd = await page.$x('//*[@id="new_user"]/div[1]/input[2]');
   // await pwd[0].focus();
   // await page.keyboard.type('mmwybzd555');
   // const display = await page.$('#new_user');
   // const documentSize = await page.evaluate(async(Tesseract) => {
   //   console.log(Tesseract);
-  //   const test = await Tesseract.recognize('data:image\/([a-zA-Z]*);base64,([^"]*)');
-  //   console.log(test);
+    // const test = await Tesseract.recognize(png);
+    // console.log(test);
   //   return document.querySelector('#new_user')
   // }, Tesseract);
   // const png = require('/public/abc.png');
-  const test = await Tesseract.recognize(
-    resolve('../../public/abc.png'),
-    'eng',
-  );
-  console.log(test);
-  debugger;
+  // const test = await Tesseract.recognize(
+  //   resolve('../../public/abc.png'),
+  //   'eng',
+  // );
+  // console.log(test);
+  // debugger;
   // const test = await Tesseract.recognize(display, {
   //   lang: 'eng',
   // });

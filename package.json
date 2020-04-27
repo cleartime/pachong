@@ -25,6 +25,7 @@
     "@nestjs/core": "^7.0.0",
     "@nestjs/mongoose": "^6.4.0",
     "@nestjs/platform-express": "^7.0.0",
+    "baidu-aip-sdk": "^2.4.6",
     "mongoose": "^5.9.9",
     "puppeteer": "^3.0.1",
     "reflect-metadata": "^0.1.13",
