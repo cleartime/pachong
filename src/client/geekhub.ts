@@ -49,6 +49,19 @@ export const geekLogin = async function() {
     return;
   }
   console.log('登录成功');
+  const center = await page.$x('/html/body/div/header/div[1]/div[2]/div/a[2]');
+  await center[0].click();
+  await page.waitForNavigation();
+  console.log('进入个人中心');
+  const checkins = await page.$x('/html/body/div/div[2]/sidebar/div[1]/div[2]/div/div[3]/a[2]/div/span[2]');
+  await checkins[0].click();
+  await page.waitForNavigation();
+  console.log('签到');
+  const signLn = await page.$x('/html/body/div/div[2]/main/div[2]/a');
+  await signLn[0].click();
+  await page.waitForNavigation();
+  
+  
   // await browser.close();
   // console.log('关闭网站');
 };
