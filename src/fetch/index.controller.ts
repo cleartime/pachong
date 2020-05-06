@@ -1,7 +1,6 @@
 import { Controller, Get, Query, Post, Body, Param } from '@nestjs/common';
 import { IndexService } from './index.service';
 import { login, geekLogin } from '../client/index';
-import { from } from 'rxjs';
 @Controller('fetch')
 export class IndexController {
   constructor(private indexService: IndexService) {}
