@@ -7,7 +7,7 @@ const config = {
   pwd: 'mmwybzd555',
 };
 
-const init = async function(page) {
+const init = async function(page, isLoginSuccess) {
   console.log('输入帐号');
   const account = await page.$x('//*[@id="new_user"]/div[1]/input[1]');
   await account[0].focus();
@@ -27,6 +27,14 @@ const init = async function(page) {
   const btn = await page.$x('//*[@id="new_user"]/div[4]/div[1]/button');
   await btn[0].click();
   await page.waitForNavigation();
+  const location = await page.evaluate(() => {
+    return window.location.href;
+  });
+  if (location === config.urlLogin) {
+    await init(page, isLoginSuccess);
+  } else {
+    isLoginSuccess = true
+  }
 };
 export const geekLogin = async function() {
   // debugger
@@ -40,14 +48,9 @@ export const geekLogin = async function() {
   const page = await browser.newPage();
   await page.setJavaScriptEnabled(true);
   await page.goto(config.urlLogin);
-  await init(page);
-  const location = await page.evaluate(() => {
-    return window.location.href;
-  });
-  if (location === config.urlLogin) {
-    await init(page);
-    return;
-  }
+  const isLoginSuccess = false;
+  await init(page, isLoginSuccess);
+  if (isLoginSuccess) return;
   console.log('登录成功');
   const center = await page.$x('/html/body/div/header/div[1]/div[2]/div/a[2]');
   await center[0].click();
@@ -60,8 +63,6 @@ export const geekLogin = async function() {
   const signLn = await page.$x('/html/body/div/div[2]/main/div[2]/a');
   await signLn[0].click();
   await page.waitForNavigation();
-  
-  
   // await browser.close();
   // console.log('关闭网站');
 };
