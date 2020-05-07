@@ -50,7 +50,7 @@ export const geekLogin = async function() {
   const page = await browser.newPage();
   await page.setJavaScriptEnabled(true);
   await page.goto(config.urlLogin);
-  const isLogin = await init(page);
+  await init(page);
   console.log('登录成功');
   await page.goto(config.urlCheckins);
   await page.waitForNavigation();
