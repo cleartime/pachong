@@ -3,11 +3,13 @@ const puppeteer = require('puppeteer');
 
 const config = {
   urlLogin: 'https://geekhub.com/users/sign_in',
+  urlCheckins: 'https://geekhub.com/checkins',
   account: '1047105447@qq.com',
   pwd: 'mmwybzd555',
 };
 
-const init = async function(page, isLoginSuccess) {
+const init = async function(page) {
+  await page.reload();
   console.log('输入帐号');
   const account = await page.$x('//*[@id="new_user"]/div[1]/input[1]');
   await account[0].focus();
@@ -22,7 +24,7 @@ const init = async function(page, isLoginSuccess) {
   console.log('输入图形验证码' + code);
   const codeInput = await page.$x('//*[@id="new_user"]/div[2]/input');
   await codeInput[0].focus();
-  await page.keyboard.type(code);
+  await page.keyboard.type(code || 'abced');
   console.log('登录');
   const btn = await page.$x('//*[@id="new_user"]/div[4]/div[1]/button');
   await btn[0].click();
@@ -31,9 +33,9 @@ const init = async function(page, isLoginSuccess) {
     return window.location.href;
   });
   if (location === config.urlLogin) {
-    await init(page, isLoginSuccess);
+    await init(page);
   } else {
-    isLoginSuccess = true
+    return true;
   }
 };
 export const geekLogin = async function() {
@@ -41,22 +43,21 @@ export const geekLogin = async function() {
   console.log('打开网站');
   const browser = await puppeteer.launch({
     ignoreHTTPSErrors: true,
-    // headless: false,
+    headless: false,
     slowMo: 250,
     timeout: 0,
   });
   const page = await browser.newPage();
   await page.setJavaScriptEnabled(true);
   await page.goto(config.urlLogin);
-  const isLoginSuccess = false;
-  await init(page, isLoginSuccess);
-  if (isLoginSuccess) return;
+  const isLogin = await init(page);
   console.log('登录成功');
-  const center = await page.$x('/html/body/div/header/div[1]/div[2]/div/a[2]');
-  await center[0].click();
+  await page.goto(config.urlCheckins);
   await page.waitForNavigation();
-  console.log('进入个人中心');
-  const checkins = await page.$x('/html/body/div/div[2]/sidebar/div[1]/div[2]/div/div[3]/a[2]/div/span[2]');
+  console.log('进入签到页');
+  const checkins = await page.$x(
+    '/html/body/div/div[2]/sidebar/div[1]/div[2]/div/div[3]/a[2]/div/span[2]',
+  );
   await checkins[0].click();
   await page.waitForNavigation();
   console.log('签到');
