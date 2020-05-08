@@ -1,6 +1,6 @@
 import { Controller, Get, Query, Post, Body, Param } from '@nestjs/common';
 import { IndexService } from './index.service';
-import { login, geekLogin } from '../client/index';
+import { acfunlogin, geekLogin } from '../client/index';
 @Controller('fetch')
 export class IndexController {
   constructor(private indexService: IndexService) {}
@@ -8,9 +8,9 @@ export class IndexController {
   geekhublogin() {
     geekLogin();
   }
-  @Post('login')
+  @Post('acfunlogin')
   login() {
-    login();
+    acfunlogin();
   }
   @Get()
   findAll() {
