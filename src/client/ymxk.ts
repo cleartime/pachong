@@ -9,7 +9,7 @@ const config = {
 export const getContent = async function () {
   console.log('打开网站');
   const browser = await puppeteer.launch({
-    ignoreHTTPSErrors: true,
+    ignoreHTTPSErrors: true, 
     headless: false,
     slowMo: 250,
     timeout: 0,
@@ -24,7 +24,7 @@ export const getContent = async function () {
   const Mid2L_tit = await page.evaluate((title) => {
     return title;
   }, title[0]);
-  console.log(title)
+  // console.log(title)
   // const Mid2L_des = await page.evaluate(() => {
   //   const html = document.querySelector('.Mid2L_con > p').innerHTML
   //   return html.replace('游民星空', 'Acfun');
