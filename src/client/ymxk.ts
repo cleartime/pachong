@@ -1,76 +1,72 @@
 const puppeteer = require('puppeteer');
+import { creatIndexHtml, openIndexHtml } from '../file'
 
 const config = {
   url: 'https://www.gamersky.com/ent/xz/',
-  url_news: 'https://www.gamersky.com/news/'
+  url_news: 'https://www.gamersky.com/news/',
+  tag: '综合',
 }
 
 
 export const getContent = async function () {
-  console.log('打开网站');
+  console.log('打开ymxk网站');
   const browser = await puppeteer.launch({
-    ignoreHTTPSErrors: true, 
+    ignoreHTTPSErrors: true,
     headless: false,
     slowMo: 250,
     timeout: 0,
   });
   const page = await browser.newPage();
+  page.setDefaultNavigationTimeout(60000)
   await page.setJavaScriptEnabled(true);
   await page.goto(config.url_news);
-  const link = await page.$x('/html/body/div[7]/div[2]/div[1]/div[3]/ul/li[1]/div[1]/a[2]');
-  await link[0].click();
+  const link = await page.evaluate(() => {
+    const href = 'https://www.gamersky.com/ent/202005/1286899.shtml'
+    // const href = document.querySelector('div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.tt').getAttribute('href')
+    const tag = document.querySelector('div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.dh').innerHTML
+    const id = href.match(/\d+/g).join()
+    return {
+      tag,
+      href,
+      id,
+    };
+  });
 
-  const title = await page.$x('/html/body/div[10]/div/div[2]/div[1]/div[1]/div[3]')
-  const Mid2L_tit = await page.evaluate((title) => {
-    return title;
-  }, title[0]);
-  // console.log(title)
-  // const Mid2L_des = await page.evaluate(() => {
-  //   const html = document.querySelector('.Mid2L_con > p').innerHTML
-  //   return html.replace('游民星空', 'Acfun');
-  // });
-  // const Mid2L_con = await page.evaluate(() => {
-  //   const html = document.querySelector('.Mid2L_con').innerHTML
-  //   return html.replace('游民星空', 'Acfun');
-  // });
-  // return {
-  //   title: Mid2L_tit, des: Mid2L_des, con: Mid2L_con
-  // }
-  //   await page.on('response', async (response) => {    
-  //     if (response.url() == "https://capuk.org/ajax_search/capmoneycourses"){
-  //         console.log('XHR response received'); 
-  //         console.log(await response.json()); 
-  //     } 
-  // });
+  const html = await mapPage(page, link)
 
-  //   const accountswitchx = await page.$x('//*[@id="login-account-switch"]');
-  //   await accountswitchx[0].click();
-  //   const account = await page.$('#ipt-account-login');
-  //   await account.focus();
-  //   await page.keyboard.type('17621218285');
-  //   const pwd = await page.$('#ipt-pwd-login');
-  //   await pwd.focus();
-  //   await page.keyboard.type('Gxx562606139');
-  //   const btn = await page.$('.btn-login');
-  //   await btn.click();
-  //   console.log('登录');
-  //   await page.waitFor(5000);
-  //   //*[@id="header-guide"]/li[6]/div/ul/li[2]/a
-  //   await page.goto('https://member.acfun.cn/post-article');
-  //   // const title = await page.$x('/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[1]/div[2]/div[2]/div/div[1]/input');
-  //   // await title[0].focus();
-  //   // await page.keyboard.type();
-  //   console.log('开始选择分区');
-  //   const fenqu = await page.$x(
-  //     '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[4]/div[2]/div/div[1]/input',
-  //   );
-  //   await fenqu[0].click();
-  //   const cascader1 = await page.$x(
-  //     '/html/body/div[4]/div[1]/div[1]/div[1]/ul/li[2]',
-  //   );
-  //   await cascader1[0].hover();
-  //   const cascader2 = await page.$x(
-  //     '/html/body/div[4]/div[1]/div[2]/div[1]/ul/li[3]',
-  //   );
-  //   // debugger
+  if (!html) return
+  openIndexHtml(page)
+  // await browser.close();
+  console.log('关闭ymxk网站');
+  return { ...config, ...link, ...html }
 };
+
+const mapPage = async function (page, link) {
+  if (!link.href) return;
+  await page.goto(link.href);
+  const html = await page.evaluate(() => {
+    let href = ''
+    const title = 'div.Mid2L_ctt.block > div.Mid2L_tit > h1';
+    const des = 'div.Mid2L_ctt.block > div.Mid2L_con > p:nth-child(1)';
+    const content = 'div.Mid2L_ctt.block > div.Mid2L_con'
+    const nextPage = Array.from(document.querySelectorAll('.page_css b + a')).find(item => item);
+    const hasnextPage = Array.from(document.querySelectorAll('.page_css a')).find(item => item.innerHTML === '下一页')
+    if (hasnextPage) {
+      href = (nextPage as any).href
+    }
+    return {
+      title: document.querySelector(title).innerHTML.replace(/游民星空/g, 'Acfun'),
+      des: document.querySelector(des).innerHTML.replace(/游民星空/g, 'Acfun'),
+      content: document.querySelector(content).innerHTML.replace(/游民星空/g, 'Acfun'),
+      href,
+      hasnextPage
+    };
+  });
+  creatIndexHtml(html.content)
+  if (html.hasnextPage) {
+    await mapPage(page, html)
+    return false
+  }
+
+  return html
+}
