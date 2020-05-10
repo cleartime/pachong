@@ -17,15 +17,21 @@ export const creatIndexHtml = async function (content) {
           console.log("数据写入成功！");
         });
       } else {
-        fs.writeFile(url, content, function (err) {
+        console.log("准备删除文件！");
+        fs.unlink(url, function (err) {
           if (err) {
-            reject()
             return console.error(err);
           }
-          resolve()
-          console.log("数据写入成功！");
+          fs.writeFile(url, content, function (err) {
+            console.log("文件新建成功！");
+            if (err) {
+              reject()
+              return console.error(err);
+            }
+            resolve()
+            console.log("数据写入成功！");
+          });
         });
-        console.log("文件新建成功！");
       }
     })
 
