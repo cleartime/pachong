@@ -77,7 +77,7 @@ export const acfunlogin = async function(option:any = {}) {
   const description  = await page.$x(
     '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[6]/div[2]/div/div/div/textarea',
   );
-   await description[0].focus();
+  await description[0].focus();
   await page.keyboard.type(des);
   console.log('输入正文')
   const editor = await page.$('.ql-editor.ql-blank');

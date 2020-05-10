@@ -2,11 +2,12 @@ var fs = require("fs");
 var path = require('path')
 const puppeteer = require('puppeteer');
 
-export const creatIndexHtml = async function (content, frist = false) {
-  console.log("准备写入文件");
+export const creatIndexHtml = async function (content, frist) {
   const url = path.join(__dirname, '../../public', 'index.html')
   return new Promise(function (resolve, reject) {
+    console.log(frist)
     if (frist) {
+      console.log("清空文件");
       fs.unlink(url, function (err) {
         if (err) {
           return console.error(err);
@@ -33,7 +34,7 @@ export const creatIndexHtml = async function (content, frist = false) {
             console.log("数据写入成功！");
           });
         } else {
-          console.log("准备删除文件！");
+          console.log("数据写入失败！");
         }
       })
     }
@@ -45,4 +46,9 @@ export const openIndexHtml = async function (page) {
   console.log("打开index.html");
   const url = path.join(__dirname, '../../public', 'index.html')
   await page.goto(url);
+  await page.reload();
+  const body  = await page.$(document.body);
+  await body.focus();
+  await page.keyboard.down('Control')
+  await page.keyboard.down('A')
 }
