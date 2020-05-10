@@ -1,9 +1,8 @@
 var fs = require("fs");
 var path = require('path')
-const puppeteer = require('puppeteer');
+const url = path.join(__dirname, '../../public', 'index.html')
 
 export const creatIndexHtml = async function (content, frist) {
-  const url = path.join(__dirname, '../../public', 'index.html')
   return new Promise(function (resolve, reject) {
     console.log(frist)
     if (frist) {
@@ -44,11 +43,17 @@ export const creatIndexHtml = async function (content, frist) {
 
 export const openIndexHtml = async function (page) {
   console.log("打开index.html");
-  const url = path.join(__dirname, '../../public', 'index.html')
   await page.goto(url);
   await page.reload();
-  const body  = await page.$(document.body);
-  await body.focus();
+  await page.evaluate(() => {
+    document.body.focus();
+  });
   await page.keyboard.down('Control')
   await page.keyboard.down('A')
+  await page.keyboard.up('Control')
+  await page.keyboard.up('A')
+  await page.keyboard.down('Control')
+  await page.keyboard.down('c')
+  await page.keyboard.up('Control')
+  await page.keyboard.up('c')
 }

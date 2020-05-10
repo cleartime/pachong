@@ -34,10 +34,9 @@ export const getContent = async function () {
   });
   let end = true;
   const html = await mapPage(page, link, true, end)
-  console.log(html)
   if (!end) return
-  openIndexHtml(page)
-  // await browser.close();
+  await openIndexHtml(page)
+  await browser.close();
   console.log('关闭ymxk网站');
   return { ...config, ...link, ...html }
 };

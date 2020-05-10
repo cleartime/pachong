@@ -78,10 +78,14 @@ export const acfunlogin = async function(option:any = {}) {
     '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[6]/div[2]/div/div/div/textarea',
   );
   await description[0].focus();
-  await page.keyboard.type(des);
+  await page.keyboard.type(des.slice(0,50));
   console.log('输入正文')
   const editor = await page.$('.ql-editor.ql-blank');
   await editor.focus();
+  await page.keyboard.down('Control')
+  await page.keyboard.down('v')
+  await page.keyboard.up('Control')
+  await page.keyboard.up('v')
   // await page.keyboard.type(content);
   // const link = await page.evaluate((editor, content) => {
   //   editor.innerHtml = content
