@@ -62,7 +62,7 @@ const mapPage = async function (page, link) {
       hasnextPage
     };
   });
-  creatIndexHtml(html.content)
+  creatIndexHtml(html.content, !html.hasnextPage)
   if (html.hasnextPage) {
     await mapPage(page, html)
     return false
