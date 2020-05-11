@@ -47,6 +47,7 @@ export const openIndexHtml = async function (page) {
   await page.reload();
   await page.evaluate(() => {
     document.body.focus();
+    Array.from(document.querySelectorAll('.page_css')).forEach((item)=>(item as any).remove())
   });
   await page.keyboard.down('Control')
   await page.keyboard.down('A')

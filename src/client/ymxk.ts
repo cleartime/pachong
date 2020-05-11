@@ -4,7 +4,9 @@ import { creatIndexHtml, openIndexHtml } from '../file'
 const config = {
   url: 'https://www.gamersky.com/ent/xz/',
   url_news: 'https://www.gamersky.com/news/',
+  url_ent: 'https://www.gamersky.com/ent/',
   tag: '综合',
+  prev: ''
 }
 
 
@@ -20,18 +22,25 @@ export const getContent = async function () {
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(60000)
   await page.setJavaScriptEnabled(true);
-  await page.goto(config.url_news);
+  await page.goto(config.url_ent);
   const link = await page.evaluate(() => {
-    // const href = 'https://www.gamersky.com/ent/202005/1286899.shtml'
-    const href = document.querySelector('div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.tt').getAttribute('href')
-    const tag = document.querySelector('div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.dh').innerHTML
+    const title = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
+    const href = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.tt').getAttribute('href')
+    const tag = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.dh').innerHTML
     const id = href.match(/\d+/g).join()
     return {
+      title,
       tag,
       href,
       id,
     };
   });
+  if (config.prev === link.href) {
+    await browser.close();
+    console.log('关闭ymxk网站');
+    return
+  };
+  config.prev = link.href;
   let end = true;
   const html = await mapPage(page, link, true, end)
   if (!end) return
@@ -46,7 +55,6 @@ const mapPage = async function (page, link, frist, end) {
   await page.goto(link.href);
   const html = await page.evaluate(() => {
     let href = ''
-    const title = 'div.Mid2L_ctt.block > div.Mid2L_tit > h1';
     const des = 'div.Mid2L_ctt.block > div.Mid2L_con > p:nth-child(1)';
     const content = 'div.Mid2L_ctt.block > div.Mid2L_con'
     const nextPage = Array.from(document.querySelectorAll('.page_css b + a')).find(item => item);
@@ -55,13 +63,15 @@ const mapPage = async function (page, link, frist, end) {
       href = (nextPage as any).href
     }
     return {
-      title: document.querySelector(title).innerHTML.replace(/游民星空/g, 'Acfun'),
       des: document.querySelector(des).innerHTML.replace(/游民星空/g, 'Acfun'),
       content: document.querySelector(content).innerHTML.replace(/游民星空/g, 'Acfun'),
       href,
       hasnextPage
     };
   });
+  if (!html.hasnextPage) {
+    html.content += '<p><img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040894630third_party_b35465986.png">欢迎关注，收藏，香蕉<img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040895082third_party_b35465992.png"></p>'
+  }
   creatIndexHtml(html.content, frist)
   if (html.hasnextPage) {
     end = false;

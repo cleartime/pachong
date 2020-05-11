@@ -13,7 +13,7 @@ const config = {
 export const acfunlogin = async function(option: any = {}) {
   const { title = '', des = '', content = '', id = '' } = option;
   // if(!id) return
-  console.log('打开网站');
+  console.log('打开acfun网站');
   const browser = await puppeteer.launch({
     ignoreHTTPSErrors: true,
     headless: false,
@@ -108,6 +108,11 @@ export const acfunlogin = async function(option: any = {}) {
   // const link = await page.evaluate((editor, content) => {
   //   editor.innerHtml = content
   // }, editor, content);
-
+  const submit = await page.$('.article-post-confirm.ivu-btn.ivu-btn-primary');
+  await submit.focus();
+  await submit.click();
+  await page.waitFor(10000);
+  await browser.close();
+  console.log('关闭acfun网站');
   // debugger
 };
