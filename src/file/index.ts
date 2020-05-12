@@ -1,5 +1,5 @@
-var fs = require("fs");
-var path = require('path')
+const fs = require("fs");
+const path = require('path')
 const url = path.join(__dirname, '../../public', 'index.html')
 
 export const creatIndexHtml = async function (content, frist) {
@@ -43,7 +43,7 @@ export const creatIndexHtml = async function (content, frist) {
 
 export const openIndexHtml = async function (page) {
   console.log("打开index.html");
-  await page.goto(url);
+  await page.goto('http://127.0.0.1:3000/public/index.html');
   await page.reload();
   await page.evaluate(() => {
     document.body.focus();
