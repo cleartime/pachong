@@ -1,58 +1,18 @@
-const puppeteer = require('puppeteer');
+import puppeteer from 'puppeteer'
 import { creatIndexHtml, openIndexHtml } from '../file'
 
 const config = {
   url: 'https://www.gamersky.com/ent/xz/',
-  url_news: 'https://www.gamersky.com/news/',
-  url_ent: 'https://www.gamersky.com/ent/',
+  urlNews: 'https://www.gamersky.com/news/',
+  urlEnt: 'https://www.gamersky.com/ent/',
   tag: '综合',
   prev: ''
 }
 
 
-export const getContent = async function () {
-  console.log('打开ymxk网站');
-  const browser = await puppeteer.launch({
-    ignoreDefaultArgs: ['--disable-extensions'],
-    ignoreHTTPSErrors: true,
-    headless: false,
-    slowMo: 250,
-    timeout: 0,
-  });
-  const page = await browser.newPage();
-  page.setDefaultNavigationTimeout(60000)
-  await page.setJavaScriptEnabled(true);
-  await page.goto(config.url_ent);
-  const link = await page.evaluate(() => {
-    const title = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
-    const href = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.tt').getAttribute('href')
-    const tag = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.dh').innerHTML
-    const id = href.match(/\d+/g).join()
-    return {
-      title,
-      tag,
-      href,
-      id,
-    };
-  });
-  if (config.prev === link.href) {
-    await browser.close();
-    console.log('关闭ymxk网站');
-    return
-  };
-  config.prev = link.href;
-  let end = true;
-  const html = await mapPage(page, link, true, end)
-  if (!end) return
-  await openIndexHtml(page)
-  await browser.close();
-  console.log('关闭ymxk网站');
-  return { ...config, ...link, ...html }
-};
-
 const mapPage = async function (page, link, frist, end) {
   if (!link.href) return;
-  await page.goto(link.href);
+  await page.goto(link.href, {waitUntil: 'domcontentloaded'});
   const html = await page.evaluate(() => {
     let href = ''
     const des = 'div.Mid2L_ctt.block > div.Mid2L_con > p:nth-child(1)';
@@ -81,3 +41,42 @@ const mapPage = async function (page, link, frist, end) {
   end = true;
   return html
 }
+export const getContent = async function () {
+  console.log('打开ymxk网站');
+  const browser = await puppeteer.launch({
+    ignoreDefaultArgs: ['--disable-extensions'],
+    ignoreHTTPSErrors: true,
+    headless: false,
+    slowMo: 250,
+    timeout: 0,
+  });
+  const page = await browser.newPage();
+  page.setDefaultNavigationTimeout(60000)
+  await page.setJavaScriptEnabled(true);
+  await page.goto(config.urlEnt, {waitUntil: 'domcontentloaded'});
+  const link = await page.evaluate(() => {
+    const title = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
+    const href = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.tt').getAttribute('href')
+    const tag = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.dh').innerHTML
+    const id = href.match(/\d+/g).join()
+    return {
+      title,
+      tag,
+      href,
+      id,
+    };
+  });
+  if (config.prev === link.href) {
+    await browser.close();
+    console.log('关闭ymxk网站');
+    return
+  };
+  config.prev = link.href;
+  const end = true;
+  const html = await mapPage(page, link, true, end)
+  if (!end) return
+  await openIndexHtml(page)
+  await browser.close();
+  console.log('关闭ymxk网站');
+  return { ...config, ...link, ...html }
+};

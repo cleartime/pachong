@@ -1,43 +1,29 @@
-const puppeteer = require('puppeteer');
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
+import puppeteer from 'puppeteer'
 const config = {
   account: '17095739373',
   password: 'Gxx562606139',
   url: 'https://www.acfun.cn/login/',
-  article_url: 'https://member.acfun.cn/post-article',
-  channel_url: 'https://member.acfun.cn/common/api/getChannelList',
-  capmoneycourses_Api: 'https://capuk.org/ajax_search/capmoneycourses',
+  articleUrl: 'https://member.acfun.cn/post-article',
+  channelUrl: 'https://member.acfun.cn/common/api/getChannelList',
 };
 
 export const acfunlogin = async function(option: any = {}) {
   const { title = '', des = '', content = '', id = '' } = option;
-  // if(!id) return
+  if(!id) return
   console.log('打开acfun网站');
+  // https://segmentfault.com/a/1190000022057409?utm_source=tag-newest
   const browser = await puppeteer.launch({
+    args: ['--disable-web-security'],
+    ignoreDefaultArgs: ['--enable-automation'],
     ignoreHTTPSErrors: true,
-    headless: false,
+    headless: true,
     slowMo: 250,
     timeout: 0,
   });
   const page = await browser.newPage();
   await page.setJavaScriptEnabled(true);
-  await page.goto(config.url);
-  await page.on('response', async response => {
-    if (response.url() !== config.article_url) return;
-    const res = await response.json()
-    const re2 = await res
-    console.log(re2);
-  });
-  // function getResponseBody(resolve, reject){
-  //   page.on('response', async function(response){
-  //        if(response.url().includes(config.article_url)){
-  //             resolve(await response.text())
-  //        }
-  //   })
-  // }
-  // const res = await new Promise(getResponseBody)
-  // console.log(res)
+  await page.goto(config.url, { waitUntil: 'domcontentloaded' });
+
   const accountswitchx = await page.$x('//*[@id="login-account-switch"]');
   await accountswitchx[0].click();
   const account = await page.$('#ipt-account-login');
@@ -50,7 +36,14 @@ export const acfunlogin = async function(option: any = {}) {
   await btn.click();
   console.log('登录');
   await page.waitFor(5000);
-  await page.goto(config.article_url);
+  await page.goto(config.articleUrl, { waitUntil: 'domcontentloaded' });
+  page.on('response', response => {
+    if (response.url() === config.channelUrl) {
+      response.json().then(function(textBody) {
+        console.log(textBody[0]);
+      });
+    }
+  });
   console.log('输入标题');
   const tit = await page.$x(
     '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[1]/div[2]/div[2]/div/div[1]/input',
@@ -110,9 +103,9 @@ export const acfunlogin = async function(option: any = {}) {
   // }, editor, content);
   const submit = await page.$('.article-post-confirm.ivu-btn.ivu-btn-primary');
   await submit.focus();
-  await submit.click();
-  await page.waitFor(10000);
-  await browser.close();
-  console.log('关闭acfun网站');
+  // await submit.click();
+  // await page.waitFor(10000);
+  // await browser.close();
+  // console.log('关闭acfun网站');
   // debugger
 };

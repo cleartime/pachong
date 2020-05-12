@@ -1,6 +1,12 @@
 const schedule = require('node-schedule');
 import { acfunlogin, geekLogin, getContent } from '../client'
-import { from } from 'rxjs';
+
+
+const init = async function () {
+  const res = await getContent()
+  acfunlogin(res);
+}
+
 export const scheduleCronstyle = async () => {
   // 每分钟的第30秒定时执行一次:
   // schedule.scheduleJob('60 * * * * *',()=>{
@@ -13,7 +19,3 @@ export const scheduleCronstyle = async () => {
   // }, num)
 }
 
-const init = async function () {
-  const res = await getContent()
-  acfunlogin(res);
-}
