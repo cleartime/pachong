@@ -13,10 +13,10 @@ export const acfunlogin = async function(option: any = {}) {
   console.log('打开acfun网站');
   // https://segmentfault.com/a/1190000022057409?utm_source=tag-newest
   const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security'],
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security， -- disable -extensions'],
     ignoreDefaultArgs: ['--disable-extensions', '--enable-automation'],
     ignoreHTTPSErrors: true,
-    headless: true,
+    headless: false,
     slowMo: 250,
     timeout: 0,
   });
@@ -64,25 +64,25 @@ export const acfunlogin = async function(option: any = {}) {
   );
   await cascader2[0].click();
   console.log('选择标签');
-  const tag1 = await page.$x(
-    '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[5]/div[2]/div[3]/div/div/div[6]',
+  const tag1 = await page.$(
+    'body > div.main.admin > div.upload-container > div.upload-content-body.clearfix > div > div > div > form > div.video-info-container.clearfix.tag-container > div.video-select-container.fl > div:nth-child(4) > div > div > div.video-upload-tag-item.fl.video-upload-tag-active',
   );
-  await tag1[0].click();
+  await tag1.click();
 
-  const tag2 = await page.$x(
-    '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[5]/div[2]/div[3]/div/div/div[7]',
+  const tag2 = await page.$(
+    'body > div.main.admin > div.upload-container > div.upload-content-body.clearfix > div > div > div > form > div.video-info-container.clearfix.tag-container > div.video-select-container.fl > div:nth-child(4) > div > div > div:nth-child(7)',
   );
-  await tag2[0].click();
+  await tag2.click();
 
-  const tag3 = await page.$x(
-    '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[5]/div[2]/div[3]/div/div/div[8]',
+  const tag3 = await page.$(
+    'body > div.main.admin > div.upload-container > div.upload-content-body.clearfix > div > div > div > form > div.video-info-container.clearfix.tag-container > div.video-select-container.fl > div:nth-child(4) > div > div > div:nth-child(8)',
   );
-  await tag3[0].click();
+  await tag3.click();
 
-  const tag4 = await page.$x(
-    '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[5]/div[2]/div[3]/div/div/div[9]',
+  const tag4 = await page.$(
+    'body > div.main.admin > div.upload-container > div.upload-content-body.clearfix > div > div > div > form > div.video-info-container.clearfix.tag-container > div.video-select-container.fl > div:nth-child(4) > div > div > div:nth-child(9)',
   );
-  await tag4[0].click();
+  await tag4.click();
   console.log('输入简介');
 
   const description = await page.$x(
@@ -103,9 +103,9 @@ export const acfunlogin = async function(option: any = {}) {
   // }, editor, content);
   const submit = await page.$('.article-post-confirm.ivu-btn.ivu-btn-primary');
   await submit.focus();
-  await submit.click();
-  await page.waitFor(10000);
-  await browser.close();
+  // await submit.click();
+  // await page.waitFor(10000);
+  // await browser.close();
   console.log('关闭acfun网站');
   // debugger
 };

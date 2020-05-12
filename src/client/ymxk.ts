@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
-import { creatIndexHtml, openIndexHtml } from '../file'
+import { creatIndexHtml, openIndexHtml, getHrefText, setHrefText } from '../file'
+
 
 const config = {
   url: 'https://www.gamersky.com/ent/xz/',
@@ -10,9 +11,9 @@ const config = {
 }
 
 
-const mapPage = async function (page, link, frist, end) {
+const mapPage = async function (page, link, frist) {
   if (!link.href) return;
-  await page.goto(link.href, {waitUntil: 'domcontentloaded'});
+  await page.goto(link.href, { waitUntil: 'domcontentloaded' });
   const html = await page.evaluate(() => {
     let href = ''
     const des = 'div.Mid2L_ctt.block > div.Mid2L_con > p:nth-child(1)';
@@ -23,42 +24,42 @@ const mapPage = async function (page, link, frist, end) {
       href = (nextPage as any).href
     }
     return {
-      des: document.querySelector(des).innerHTML.replace(/游民星空/g, 'Acfun'),
+      describe: document.querySelector(des).innerHTML.replace(/游民星空/g, 'Acfun'),
       content: document.querySelector(content).innerHTML.replace(/游民星空/g, 'Acfun'),
       href,
       hasnextPage
     };
   });
+  if (!html.des) {
+    html.des = html.describe
+  }
   if (!html.hasnextPage) {
     html.content += '<p><img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040894630third_party_b35465986.png">欢迎关注，收藏，香蕉<img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040895082third_party_b35465992.png"></p>'
   }
   creatIndexHtml(html.content, frist)
   if (html.hasnextPage) {
-    end = false;
-    await mapPage(page, html, false, end)
-    return false
+    await mapPage(page, html, false)
   }
-  end = true;
   return html
 }
 export const getContent = async function () {
   console.log('打开ymxk网站');
   const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security'],
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security, -- disable -extensions'],
     ignoreDefaultArgs: ['--disable-extensions', '--enable-automation'],
     ignoreHTTPSErrors: true,
-    headless: true,
+    headless: false,
     slowMo: 250,
     timeout: 0,
   });
   const page = await browser.newPage();
-  page.setDefaultNavigationTimeout(60000)
+  page.setDefaultNavigationTimeout(0)
   await page.setJavaScriptEnabled(true);
-  await page.goto(config.urlEnt, {waitUntil: 'domcontentloaded'});
+  await page.goto(config.urlEnt, { waitUntil: 'domcontentloaded' });
   const link = await page.evaluate(() => {
-    const title = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
-    const href = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.tt').getAttribute('href')
-    const tag = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.dh').innerHTML
+    const title = document.querySelector('div.Mid2_L ul > li:nth-child(1) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
+    const href = document.querySelector('div.Mid2_L ul > li:nth-child(1) > div.tit > a.tt').getAttribute('href')
+    const tag = document.querySelector('div.Mid2_L ul > li:nth-child(1) > div.tit > a.dh').innerHTML
     const id = href.match(/\d+/g).join()
     return {
       title,
@@ -67,17 +68,20 @@ export const getContent = async function () {
       id,
     };
   });
-  if (config.prev === link.href) {
+  const prevHref = await getHrefText()
+  console.log('上一个地址' + prevHref)
+  console.log('当前地址' + link.href)
+  if ( prevHref === link.href) {
     await browser.close();
     console.log('关闭ymxk网站');
     return
   };
+  await setHrefText(link.href)
   config.prev = link.href;
-  const end = true;
-  const html = await mapPage(page, link, true, end)
-  if (!end) return
+  const html = await mapPage(page, link, true)
+  if (!html.hasnextPage) return
   await openIndexHtml(page)
-  await browser.close();
+  // await browser.close();
   console.log('关闭ymxk网站');
   return { ...config, ...link, ...html }
 };
