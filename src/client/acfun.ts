@@ -13,8 +13,8 @@ export const acfunlogin = async function(option: any = {}) {
   console.log('打开acfun网站');
   // https://segmentfault.com/a/1190000022057409?utm_source=tag-newest
   const browser = await puppeteer.launch({
-    args: ['--disable-web-security'],
-    ignoreDefaultArgs: ['--enable-automation'],
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security'],
+    ignoreDefaultArgs: ['--disable-extensions', '--enable-automation'],
     ignoreHTTPSErrors: true,
     headless: true,
     slowMo: 250,

@@ -44,8 +44,8 @@ const mapPage = async function (page, link, frist, end) {
 export const getContent = async function () {
   console.log('打开ymxk网站');
   const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    ignoreDefaultArgs: ['--disable-extensions'],
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security'],
+    ignoreDefaultArgs: ['--disable-extensions', '--enable-automation'],
     ignoreHTTPSErrors: true,
     headless: true,
     slowMo: 250,
