@@ -43,7 +43,7 @@ export const geekLogin = async function() {
   console.log('打开网站');
   const browser = await puppeteer.launch({
     ignoreHTTPSErrors: true,
-    headless: false,
+    headless: true,
     slowMo: 250,
     timeout: 0,
   });
