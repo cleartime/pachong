@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer'
+const puppeteer = require('puppeteer');
 const config = {
   account: '17095739373',
   password: 'Gxx562606139',

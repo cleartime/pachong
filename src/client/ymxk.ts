@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer'
+const puppeteer = require('puppeteer');
 import { creatIndexHtml, openIndexHtml } from '../file'
 
 const config = {
@@ -46,7 +46,7 @@ export const getContent = async function () {
   const browser = await puppeteer.launch({
     ignoreDefaultArgs: ['--disable-extensions'],
     ignoreHTTPSErrors: true,
-    headless: false,
+    headless: true,
     slowMo: 250,
     timeout: 0,
   });

@@ -1,5 +1,5 @@
 import { getCode } from '../ocr/getCode';
-import puppeteer from 'puppeteer'
+const puppeteer = require('puppeteer');
 
 const config = {
   urlLogin: 'https://geekhub.com/users/sign_in',
