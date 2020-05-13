@@ -103,9 +103,9 @@ export const acfunlogin = async function(option: any = {}) {
   // }, editor, content);
   const submit = await page.$('.article-post-confirm.ivu-btn.ivu-btn-primary');
   await submit.focus();
-  // await submit.click();
-  // await page.waitFor(10000);
-  // await browser.close();
+  await submit.click();
+  await page.waitFor(10000);
+  await browser.close();
   console.log('关闭acfun网站');
   // debugger
 };
