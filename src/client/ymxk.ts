@@ -1,9 +1,11 @@
 const puppeteer = require('puppeteer');
 import { creatIndexHtml, openIndexHtml, getHrefText, setHrefText } from '../file'
+import { browserJSON, errorDeal } from './config'
 
 
 const config = {
-  url: 'https://www.gamersky.com/ent/xz/',
+  url: '',
+  urlXz: 'https://www.gamersky.com/ent/xz/',
   urlNews: 'https://www.gamersky.com/news/',
   urlEnt: 'https://www.gamersky.com/ent/',
   tag: '综合',
@@ -43,35 +45,47 @@ const mapPage = async function (page, link, frist) {
   return html
 }
 export const getContent = async function () {
+  config.url = config.urlNews;
   console.log('打开ymxk网站');
-  const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security, -- disable -extensions'],
-    ignoreDefaultArgs: ['--disable-extensions', '--enable-automation'],
-    ignoreHTTPSErrors: true,
-    headless: false,
-    slowMo: 250,
-    timeout: 0,
-  });
+  const browser = await puppeteer.launch(browserJSON);
   const page = await browser.newPage();
+  errorDeal(page, browser)
   page.setDefaultNavigationTimeout(0)
   await page.setJavaScriptEnabled(true);
-  await page.goto(config.urlEnt, { waitUntil: 'domcontentloaded' });
-  const link = await page.evaluate(() => {
-    const title = document.querySelector('div.Mid2_L ul > li:nth-child(1) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
-    const href = document.querySelector('div.Mid2_L ul > li:nth-child(1) > div.tit > a.tt').getAttribute('href')
-    const tag = document.querySelector('div.Mid2_L ul > li:nth-child(1) > div.tit > a.dh').innerHTML
-    const id = href.match(/\d+/g).join()
+  await page.goto(config.url, { waitUntil: 'domcontentloaded' });
+  await page.waitFor(1000);
+  const link = await page.evaluate((config) => {
+    let title, href, tag, id;
+    if (config.url === config.urlXz) {
+      title = document.querySelector('div.Mid2_L > ul > li:nth-child(1) > div.con > div.tit > a').innerHTML.replace(/游民星空/g, 'Acfun')
+      href = document.querySelector('div.Mid2_L > ul > li:nth-child(1) > div.con > div.tit > a').getAttribute('href')
+      tag = '福利'
+      id = href.match(/\d+/g).join()
+    }
+    if (config.url === config.urlNews) {
+      title = document.querySelector('body > div.Mid > div.Mid2 > div.Mid2_L > div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
+      href = document.querySelector('body > div.Mid > div.Mid2 > div.Mid2_L > div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.tt').getAttribute('href')
+      tag = document.querySelector('body > div.Mid > div.Mid2 > div.Mid2_L > div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.dh').innerHTML
+      id = href.match(/\d+/g).join()
+
+    }
+    if (config.url === config.urlEnt) {
+      title = document.querySelector('div.Mid2_L ul > li:nth-child(1) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
+      href = document.querySelector('div.Mid2_L ul > li:nth-child(1) > div.tit > a.tt').getAttribute('href')
+      tag = document.querySelector('div.Mid2_L ul > li:nth-child(1) > div.tit > a.dh').innerHTML
+      id = href.match(/\d+/g).join()
+    }
     return {
       title,
       tag,
       href,
       id,
     };
-  });
+  }, config);
   const prevHref = await getHrefText()
   console.log('上一个地址' + prevHref)
   console.log('当前地址' + link.href)
-  if ( prevHref === link.href) {
+  if (prevHref === link.href) {
     await browser.close();
     console.log('关闭ymxk网站');
     return
@@ -79,9 +93,8 @@ export const getContent = async function () {
   await setHrefText(link.href)
   config.prev = link.href;
   const html = await mapPage(page, link, true)
-  if (!html.hasnextPage) return
   await openIndexHtml(page)
-  // await browser.close();
+  await browser.close();
   console.log('关闭ymxk网站');
   return { ...config, ...link, ...html }
 };

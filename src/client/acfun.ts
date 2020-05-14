@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+import { browserJSON, errorDeal } from './config'
 const config = {
   account: '17095739373',
   password: 'Gxx562606139',
@@ -7,20 +8,13 @@ const config = {
   channelUrl: 'https://member.acfun.cn/common/api/getChannelList',
 };
 
-export const acfunlogin = async function(option: any = {}) {
+export const acfunlogin = async function (option: any = {}) {
   const { title = '', des = '', content = '', id = '' } = option;
-  if(!id) return
+  if (!id) return
   console.log('打开acfun网站');
-  // https://segmentfault.com/a/1190000022057409?utm_source=tag-newest
-  const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security， -- disable -extensions'],
-    ignoreDefaultArgs: ['--disable-extensions', '--enable-automation'],
-    ignoreHTTPSErrors: true,
-    headless: false,
-    slowMo: 250,
-    timeout: 0,
-  });
+  const browser = await puppeteer.launch(browserJSON);
   const page = await browser.newPage();
+  errorDeal(page, browser);
   await page.setJavaScriptEnabled(true);
   await page.goto(config.url, { waitUntil: 'domcontentloaded' });
 
@@ -38,11 +32,11 @@ export const acfunlogin = async function(option: any = {}) {
   await page.waitFor(5000);
   await page.goto(config.articleUrl, { waitUntil: 'domcontentloaded' });
   page.on('response', response => {
-    if (response.url() === config.channelUrl) {
-      response.json().then(function(textBody) {
-        console.log(textBody[0]);
-      });
-    }
+    // if (response.url() === config.channelUrl) {
+    //   response.json().then(function(textBody) {
+    //     console.log(textBody[0]);
+    //   });
+    // }
   });
   console.log('输入标题');
   const tit = await page.$x(
@@ -64,27 +58,21 @@ export const acfunlogin = async function(option: any = {}) {
   );
   await cascader2[0].click();
   console.log('选择标签');
-  const tag1 = await page.$(
-    'body > div.main.admin > div.upload-container > div.upload-content-body.clearfix > div > div > div > form > div.video-info-container.clearfix.tag-container > div.video-select-container.fl > div:nth-child(4) > div > div > div.video-upload-tag-item.fl.video-upload-tag-active',
-  );
-  await tag1.click();
-
-  const tag2 = await page.$(
-    'body > div.main.admin > div.upload-container > div.upload-content-body.clearfix > div > div > div > form > div.video-info-container.clearfix.tag-container > div.video-select-container.fl > div:nth-child(4) > div > div > div:nth-child(7)',
-  );
-  await tag2.click();
-
-  const tag3 = await page.$(
-    'body > div.main.admin > div.upload-container > div.upload-content-body.clearfix > div > div > div > form > div.video-info-container.clearfix.tag-container > div.video-select-container.fl > div:nth-child(4) > div > div > div:nth-child(8)',
-  );
-  await tag3.click();
-
-  const tag4 = await page.$(
-    'body > div.main.admin > div.upload-container > div.upload-content-body.clearfix > div > div > div > form > div.video-info-container.clearfix.tag-container > div.video-select-container.fl > div:nth-child(4) > div > div > div:nth-child(9)',
-  );
-  await tag4.click();
+  const tag1 = await page.$('.video-input-box-val');
+  await tag1.focus();
+  await tag1.type('搞笑');
+  await page.keyboard.down('Enter');
+  await page.keyboard.up('Enter');
+  await tag1.type('福利');
+  await page.keyboard.down('Enter');
+  await page.keyboard.up('Enter');
+  await tag1.type('正能量');
+  await page.keyboard.down('Enter');
+  await page.keyboard.up('Enter');
+  await tag1.type('自由');
+  await page.keyboard.down('Enter');
+  await page.keyboard.up('Enter');
   console.log('输入简介');
-
   const description = await page.$x(
     '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[6]/div[2]/div/div/div/textarea',
   );
@@ -97,15 +85,12 @@ export const acfunlogin = async function(option: any = {}) {
   await page.keyboard.down('v');
   await page.keyboard.up('Control');
   await page.keyboard.up('v');
-  // await page.keyboard.type(content);
-  // const link = await page.evaluate((editor, content) => {
-  //   editor.innerHtml = content
-  // }, editor, content);
   const submit = await page.$('.article-post-confirm.ivu-btn.ivu-btn-primary');
   await submit.focus();
   await submit.click();
+  console.log('发布');
   await page.waitFor(10000);
-  await browser.close();
+  // await browser.close();
   console.log('关闭acfun网站');
   // debugger
 };
