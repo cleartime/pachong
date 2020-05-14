@@ -90,7 +90,7 @@ export const acfunlogin = async function (option: any = {}) {
   await submit.click();
   console.log('发布');
   await page.waitFor(10000);
-  // await browser.close();
+  await browser.close();
   console.log('关闭acfun网站');
   // debugger
 };
