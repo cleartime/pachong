@@ -85,11 +85,18 @@ export const getContent = async function () {
   const prevHref = await getHrefText()
   console.log('上一个地址' + prevHref)
   console.log('当前地址' + link.href)
+  // link.href = 'https://www.gamersky.com/ent/202005/1287592.shtml'
   if (prevHref === link.href) {
     await browser.close();
     console.log('关闭ymxk网站');
     return
   };
+  if (link.tag === '专栏') {
+    await browser.close();
+    console.log('关闭ymxk网站');
+    return
+  };
+  console.log('当前标题是：' + link.title)
   await setHrefText(link.href)
   config.prev = link.href;
   const html = await mapPage(page, link, true)

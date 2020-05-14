@@ -6,6 +6,7 @@ const config = {
   url: 'https://www.acfun.cn/login/',
   articleUrl: 'https://member.acfun.cn/post-article',
   channelUrl: 'https://member.acfun.cn/common/api/getChannelList',
+  postArticleApi: 'https://member.acfun.cn/article/api/postArticle',
 };
 
 export const acfunlogin = async function (option: any = {}) {
@@ -31,12 +32,18 @@ export const acfunlogin = async function (option: any = {}) {
   console.log('登录');
   await page.waitFor(5000);
   await page.goto(config.articleUrl, { waitUntil: 'domcontentloaded' });
+
+  await page.keyboard.down('Control');
+  await page.keyboard.down('A');
+  await page.keyboard.up('Control');
+  await page.keyboard.up('C');
+
   page.on('response', response => {
-    // if (response.url() === config.channelUrl) {
-    //   response.json().then(function(textBody) {
-    //     console.log(textBody[0]);
-    //   });
-    // }
+    if (response.url() === config.postArticleApi) {
+      response.json().then(function (textBody) {
+        console.log(textBody);
+      });
+    }
   });
   console.log('输入标题');
   const tit = await page.$x(
@@ -87,8 +94,16 @@ export const acfunlogin = async function (option: any = {}) {
   await page.keyboard.up('v');
   const submit = await page.$('.article-post-confirm.ivu-btn.ivu-btn-primary');
   await submit.focus();
+  await page.screenshot({
+    path: '1.png',
+    fullPage: true
+  });
   await submit.click();
   console.log('发布');
+  await page.screenshot({
+    path: '2.png',
+    fullPage: true
+  });
   await page.waitFor(10000);
   await browser.close();
   console.log('关闭acfun网站');

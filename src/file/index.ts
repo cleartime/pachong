@@ -45,7 +45,7 @@ export const creatIndexHtml = async function (content, frist) {
 
 export const openIndexHtml = async function (page) {
   console.log("打开index.html");
-  await page.goto(url);
+  await page.goto('http://localhost:3000/public/index.html');
   await page.reload();
   await page.evaluate(() => {
     document.body.focus();
