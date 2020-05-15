@@ -18,20 +18,31 @@ const mapPage = async function (page, link, frist) {
   await page.goto(link.href, { waitUntil: 'domcontentloaded' });
   const html = await page.evaluate(() => {
     let href = ''
+    let hasnextPage = false
+    let totalPage = ''
     const des = 'div.Mid2L_ctt.block > div.Mid2L_con > p:nth-child(1)';
-    const content = 'div.Mid2L_ctt.block > div.Mid2L_con'
-    const nextPage = Array.from(document.querySelectorAll('.page_css b + a')).find(item => item);
-    const hasnextPage = Array.from(document.querySelectorAll('.page_css a')).find(item => item.innerHTML === '下一页')
-    if (hasnextPage) {
-      href = (nextPage as any).href
-    }
+    const contentClass = 'div.Mid2L_ctt.block > div.Mid2L_con'
+    const localPage = (document.querySelector('.page_css b') as any).innerText;
+    Array.from(document.querySelectorAll('.page_css a')).find((item: any, index, arr) => {
+      if (item.innerHTML === '下一页') {
+        hasnextPage = true;
+        href = item.href;
+        totalPage = (arr[index-1] as any).innerText
+      }
+    })
+    const describe = (document.querySelector(des) as any).innerText.replace(/游民星空/g, 'Acfun')
+    const content = document.querySelector(contentClass).innerHTML.replace(/游民星空/g, 'Acfun')
+    Array.from(document.querySelectorAll('.page_css')).forEach((item) => (item as any).remove())
     return {
-      describe: document.querySelector(des).innerHTML.replace(/游民星空/g, 'Acfun'),
-      content: document.querySelector(content).innerHTML.replace(/游民星空/g, 'Acfun'),
+      localPage,
+      totalPage,
+      describe,
+      content,
       href,
       hasnextPage
     };
   });
+  console.log(`（${html.localPage}/${html.totalPage}）`)
   if (!html.des) {
     html.des = html.describe
   }
@@ -45,7 +56,7 @@ const mapPage = async function (page, link, frist) {
   return html
 }
 export const getContent = async function () {
-  config.url = config.urlNews;
+  config.url = config.urlXz;
   console.log('打开ymxk网站');
   const browser = await puppeteer.launch(browserJSON);
   const page = await browser.newPage();
@@ -70,9 +81,9 @@ export const getContent = async function () {
 
     }
     if (config.url === config.urlEnt) {
-      title = document.querySelector('div.Mid2_L ul > li:nth-child(1) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
-      href = document.querySelector('div.Mid2_L ul > li:nth-child(1) > div.tit > a.tt').getAttribute('href')
-      tag = document.querySelector('div.Mid2_L ul > li:nth-child(1) > div.tit > a.dh').innerHTML
+      title = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
+      href = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.tt').getAttribute('href')
+      tag = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.dh').innerHTML
       id = href.match(/\d+/g).join()
     }
     return {
@@ -85,7 +96,6 @@ export const getContent = async function () {
   const prevHref = await getHrefText()
   console.log('上一个地址' + prevHref)
   console.log('当前地址' + link.href)
-  // link.href = 'https://www.gamersky.com/ent/202005/1287592.shtml'
   if (prevHref === link.href) {
     await browser.close();
     console.log('关闭ymxk网站');
@@ -100,7 +110,7 @@ export const getContent = async function () {
   await setHrefText(link.href)
   config.prev = link.href;
   const html = await mapPage(page, link, true)
-  await openIndexHtml(page)
+  // await openIndexHtml(page)
   await browser.close();
   console.log('关闭ymxk网站');
   return { ...config, ...link, ...html }

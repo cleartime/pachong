@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer');
 import { browserJSON, errorDeal } from './config'
+import { getIndexHtml } from '../file'
+
 const config = {
   account: '17095739373',
   password: 'Gxx562606139',
@@ -38,13 +40,6 @@ export const acfunlogin = async function (option: any = {}) {
   await page.keyboard.up('Control');
   await page.keyboard.up('C');
 
-  page.on('response', response => {
-    if (response.url() === config.postArticleApi) {
-      response.json().then(function (textBody) {
-        console.log(textBody);
-      });
-    }
-  });
   console.log('输入标题');
   const tit = await page.$x(
     '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[1]/div[2]/div[2]/div/div[1]/input',
@@ -86,12 +81,18 @@ export const acfunlogin = async function (option: any = {}) {
   await description[0].focus();
   await page.keyboard.type(des.slice(0, 50));
   console.log('输入正文');
-  const editor = await page.$('.ql-editor.ql-blank');
-  await editor.focus();
-  await page.keyboard.down('Control');
-  await page.keyboard.down('v');
-  await page.keyboard.up('Control');
-  await page.keyboard.up('v');
+  const indexhtml =  await getIndexHtml();
+  await page.evaluate((indexhtml) => {
+    const editor = document.querySelector('.ql-editor')
+    if(editor){
+      editor.innerHTML = indexhtml
+    }
+  }, indexhtml.toString());
+  // await editor.focus();
+  // await page.keyboard.down('Control');
+  // await page.keyboard.down('v');
+  // await page.keyboard.up('Control');
+  // await page.keyboard.up('v');
   const submit = await page.$('.article-post-confirm.ivu-btn.ivu-btn-primary');
   await submit.focus();
   await page.screenshot({
@@ -104,8 +105,15 @@ export const acfunlogin = async function (option: any = {}) {
     path: '2.png',
     fullPage: true
   });
-  await page.waitFor(10000);
-  await browser.close();
+  const resul2t = await page.on('response', response => {
+    if (response.url() === config.postArticleApi) {
+      response.json().then(function (textBody) {
+        return textBody
+      });
+    }
+  });
+  console.log(resul2t)
+  // await browser.close();
   console.log('关闭acfun网站');
   // debugger
 };

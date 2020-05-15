@@ -4,7 +4,7 @@ export const browserJSON = {
   args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security， -- disable -extensions'],
   ignoreDefaultArgs: ['--disable-extensions', '--enable-automation'],
   ignoreHTTPSErrors: true,
-  headless: false,
+  headless: true,
   slowMo: 250,
   timeout: 0,
 }

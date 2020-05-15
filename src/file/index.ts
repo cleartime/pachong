@@ -5,6 +5,20 @@ const path = require('path')
 const url = path.join(__dirname, '../../public', 'index.html')
 const href = path.join(__dirname, '../../public', 'href.text')
 
+
+
+export const getIndexHtml = async function () {
+  return new Promise(function (resolve, reject) {
+    fs.readFile(url, (err, data) => {
+      if (!err) {
+        resolve(data)
+      } else {
+        console.log("读取失败");
+      }
+    })
+  })
+}
+
 export const creatIndexHtml = async function (content, frist) {
   return new Promise(function (resolve, reject) {
     if (frist) {
