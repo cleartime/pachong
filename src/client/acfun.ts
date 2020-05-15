@@ -113,7 +113,7 @@ export const acfunlogin = async function (option: any = {}) {
     }
   });
   console.log(resul2t)
-  // await browser.close();
+  await browser.close();
   console.log('关闭acfun网站');
   // debugger
 };

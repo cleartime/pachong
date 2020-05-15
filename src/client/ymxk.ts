@@ -56,7 +56,7 @@ const mapPage = async function (page, link, frist) {
   return html
 }
 export const getContent = async function () {
-  config.url = config.urlXz;
+  config.url = config.urlNews;
   console.log('打开ymxk网站');
   const browser = await puppeteer.launch(browserJSON);
   const page = await browser.newPage();
