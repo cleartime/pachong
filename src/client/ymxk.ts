@@ -114,7 +114,7 @@ export const getContent = async function () {
     if (config.url === config.urlXz) {
       await setHrefText(link.href, 'urlXz');
     } else if (config.url === config.urlNews) {
-      await setHrefText(link.href, 'urlEnt');
+      await setHrefText(link.href, 'urlNews');
     } else if (config.url === config.urlEnt) {
       await setHrefText(link.href, 'urlXz');
     }

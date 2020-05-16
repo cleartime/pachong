@@ -107,7 +107,7 @@ export const getAPiHrefText = async function () {
 
 
 export const setHrefText = async function (data, name) {
-  const href = path.join(__dirname, '../../public', `href${name}.text`)
+  const href = path.join(__dirname, '../../public', `${name}.text`)
   return new Promise(function (resolve, reject) {
     fs.unlink(href, function (err) {
       if (err) {
@@ -127,7 +127,7 @@ export const setHrefText = async function (data, name) {
 
 
 export const getHrefText = async function (name) {
-  const href = path.join(__dirname, '../../public', `href${name}.text`)
+  const href = path.join(__dirname, '../../public', `${name}.text`)
   return new Promise(function (resolve, reject) {
     fs.readFile(href, (err, data) => {
       if (!err) {
