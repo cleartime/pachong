@@ -85,7 +85,7 @@ export const acfunlogin = async function (option: any = {}) {
   await tag1.type('正能量');
   await page.keyboard.down('Enter');
   await page.keyboard.up('Enter');
-  await tag1.type('游戏');
+  await tag1.type(tag);
   await page.keyboard.down('Enter');
   await page.keyboard.up('Enter');
   console.log('输入简介');
