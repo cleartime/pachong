@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-import { creatIndexHtml, openIndexHtml, getHrefText, setHrefText } from '../file'
+import { creatIndexHtml, setAPiHrefText, getAPiHrefText, getHrefText, setHrefText } from '../file'
 import { browserJSON, errorDeal } from './config'
 
 
@@ -62,7 +62,8 @@ const mapPage = async function (page, link, frist) {
   return html
 }
 export const getContent = async function () {
-  config.url = config.urlNews;
+  const apiHref: any = await getAPiHrefText();
+  config.url = apiHref || config.urlNews;
   console.log('打开ymxk网站');
   const browser = await puppeteer.launch(browserJSON);
   const page = await browser.newPage();
@@ -99,10 +100,24 @@ export const getContent = async function () {
       id,
     };
   }, config);
-  const prevHref = await getHrefText()
+  let prevHref
+  if (config.url === config.urlXz) {
+    prevHref = await getHrefText('urlXz')
+  } else if (config.url === config.urlNews) {
+    prevHref = await getHrefText('urlNews')
+  } else if (config.url === config.urlEnt) {
+    prevHref = await getHrefText('urlEnt')
+  }
   console.log('上一个地址' + prevHref)
   console.log('当前地址' + link.href)
   if (prevHref === link.href) {
+    if (config.url === config.urlXz) {
+      await setHrefText(link.href, 'urlXz');
+    } else if (config.url === config.urlNews) {
+      await setHrefText(link.href, 'urlEnt');
+    } else if (config.url === config.urlEnt) {
+      await setHrefText(link.href, 'urlXz');
+    }
     await browser.close();
     console.log('关闭ymxk网站');
     return
@@ -113,7 +128,13 @@ export const getContent = async function () {
     return
   };
   console.log('当前标题是：' + link.title)
-  await setHrefText(link.href)
+  if (config.url === config.urlXz) {
+    await setAPiHrefText(config.urlNews)
+  } else if (config.url === config.urlNews) {
+    await setAPiHrefText(config.urlEnt)
+  } else if (config.url === config.urlEnt) {
+    await setAPiHrefText(config.urlXz)
+  }
   config.prev = link.href;
   const html = await mapPage(page, link, true)
   // await openIndexHtml(page)

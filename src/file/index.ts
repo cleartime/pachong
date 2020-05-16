@@ -3,7 +3,7 @@ import { async } from "rxjs/internal/scheduler/async";
 const fs = require("fs");
 const path = require('path')
 const url = path.join(__dirname, '../../public', 'index.html')
-const href = path.join(__dirname, '../../public', 'href.text')
+const apiHref = path.join(__dirname, '../../public', 'apiHref.text')
 
 
 
@@ -76,7 +76,38 @@ export const openIndexHtml = async function (page) {
 }
 
 
-export const setHrefText = async function (data) {
+export const setAPiHrefText = async function (data) {
+  return new Promise(function (resolve, reject) {
+    fs.unlink(apiHref, function (err) {
+      if (err) {
+        return console.error(err);
+      }
+      fs.writeFile(apiHref, data, function (err) {
+        if (err) {
+          reject()
+          return console.error(err);
+        }
+        resolve()
+        console.log("apiHref写入成功！");
+      });
+    });
+  })
+}
+export const getAPiHrefText = async function () {
+  return new Promise(function (resolve, reject) {
+    fs.readFile(apiHref, (err, data) => {
+      if (!err) {
+        resolve(data.toString())
+      } else {
+        console.log("apihref数据写入失败！");
+      }
+    })
+  })
+}
+
+
+export const setHrefText = async function (data, name) {
+  const href = path.join(__dirname, '../../public', `href${name}.text`)
   return new Promise(function (resolve, reject) {
     fs.unlink(href, function (err) {
       if (err) {
@@ -95,13 +126,14 @@ export const setHrefText = async function (data) {
 }
 
 
-export const getHrefText = async function () {
+export const getHrefText = async function (name) {
+  const href = path.join(__dirname, '../../public', `href${name}.text`)
   return new Promise(function (resolve, reject) {
     fs.readFile(href, (err, data) => {
       if (!err) {
         resolve(data.toString())
       } else {
-        console.log("数据写入失败！");
+        console.log("href数据写入失败！");
       }
     })
   })

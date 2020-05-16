@@ -61,6 +61,15 @@ export const acfunlogin = async function (option: any = {}) {
     cascader2 = await page.$x(
       '/html/body/div[4]/div[1]/div[2]/div[1]/ul/li[1]',
     );
+  } if (tag === '动画' || tag === '漫画') {
+    await fenqu[0].click();
+    cascader1 = await page.$x(
+      '/html/body/div[4]/div[1]/div[1]/div[1]/ul/li[5]',
+    );
+    await cascader1[0].hover();
+    cascader2 = await page.$x(
+      '/html/body/div[4]/div[1]/div[2]/div[1]/ul/li[1]',
+    );
   } else {
     await fenqu[0].click();
     cascader1 = await page.$x(
