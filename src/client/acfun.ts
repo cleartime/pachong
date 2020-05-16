@@ -12,7 +12,7 @@ const config = {
 };
 
 export const acfunlogin = async function (option: any = {}) {
-  const { title = '', des = '', content = '', id = '' } = option;
+  const { title = '', des = '', content = '', id = '', tag } = option;
   if (!id) return
   console.log('打开acfun网站');
   const browser = await puppeteer.launch(browserJSON);
@@ -47,17 +47,31 @@ export const acfunlogin = async function (option: any = {}) {
   await tit[0].focus();
   await page.keyboard.type(title);
   console.log('选择分区');
+  console.log(tag)
   const fenqu = await page.$x(
     '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[4]/div[2]/div/div[1]/input',
   );
-  await fenqu[0].click();
-  const cascader1 = await page.$x(
-    '/html/body/div[4]/div[1]/div[1]/div[1]/ul/li[2]',
-  );
-  await cascader1[0].hover();
-  const cascader2 = await page.$x(
-    '/html/body/div[4]/div[1]/div[2]/div[1]/ul/li[3]',
-  );
+  let cascader1, cascader2
+  if (tag === '单机' || tag === '网游') {
+    await fenqu[0].click();
+    cascader1 = await page.$x(
+      '/html/body/div[4]/div[1]/div[1]/div[1]/ul/li[3]',
+    );
+    await cascader1[0].hover();
+    cascader2 = await page.$x(
+      '/html/body/div[4]/div[1]/div[2]/div[1]/ul/li[1]',
+    );
+  } else {
+    await fenqu[0].click();
+    cascader1 = await page.$x(
+      '/html/body/div[4]/div[1]/div[1]/div[1]/ul/li[2]',
+    );
+    await cascader1[0].hover();
+    cascader2 = await page.$x(
+      '/html/body/div[4]/div[1]/div[2]/div[1]/ul/li[3]',
+    );
+  }
+
   await cascader2[0].click();
   console.log('选择标签');
   const tag1 = await page.$('.video-input-box-val');
@@ -71,7 +85,7 @@ export const acfunlogin = async function (option: any = {}) {
   await tag1.type('正能量');
   await page.keyboard.down('Enter');
   await page.keyboard.up('Enter');
-  await tag1.type('自由');
+  await tag1.type('游戏');
   await page.keyboard.down('Enter');
   await page.keyboard.up('Enter');
   console.log('输入简介');
@@ -81,10 +95,10 @@ export const acfunlogin = async function (option: any = {}) {
   await description[0].focus();
   await page.keyboard.type(des.slice(0, 50));
   console.log('输入正文');
-  const indexhtml =  await getIndexHtml();
+  const indexhtml = await getIndexHtml();
   await page.evaluate((indexhtml) => {
     const editor = document.querySelector('.ql-editor')
-    if(editor){
+    if (editor) {
       editor.innerHTML = indexhtml
     }
   }, indexhtml.toString());
