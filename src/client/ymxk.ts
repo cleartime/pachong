@@ -36,7 +36,7 @@ const mapPage = async function (page, link, frist) {
     const content = document.querySelector(contentClass).innerHTML.replace(/游民星空/g, 'Acfun')
     Array.from(document.querySelectorAll('.page_css')).forEach((item) => (item as any).remove())
     if(config.url === config.urlNews) {
-        Array.from(document.querySelectorAll('a')).forEach((item) => item.remove())
+        Array.from(document.querySelectorAll('a')).forEach((item) => (item as any).href = '')
     }
     return {
       time,
