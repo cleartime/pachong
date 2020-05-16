@@ -108,17 +108,18 @@ export const getContent = async function () {
   } else if (config.url === config.urlEnt) {
     prevHref = await getHrefText('urlEnt')
   } else {
-    prevHref = config.url
+    prevHref = ''
   }
+  console.log('当前分类' + config.url)
   console.log('上一个地址' + prevHref)
   console.log('当前地址' + link.href)
   if (prevHref === link.href) {
     if (config.url === config.urlXz) {
-      await setHrefText(link.href, 'urlXz');
+      await setAPiHrefText(config.urlNews)
     } else if (config.url === config.urlNews) {
-      await setHrefText(link.href, 'urlNews');
+      await setAPiHrefText(config.urlEnt)
     } else if (config.url === config.urlEnt) {
-      await setHrefText(link.href, 'urlXz');
+      await setAPiHrefText(config.urlXz)
     }
     await browser.close();
     console.log('关闭ymxk网站');
@@ -131,11 +132,11 @@ export const getContent = async function () {
   };
   console.log('当前标题是：' + link.title)
   if (config.url === config.urlXz) {
-    await setAPiHrefText(config.urlNews)
+    await setHrefText(link.href, 'urlXz')
   } else if (config.url === config.urlNews) {
-    await setAPiHrefText(config.urlEnt)
+    await setHrefText(link.href, 'urlNews')
   } else if (config.url === config.urlEnt) {
-    await setAPiHrefText(config.urlXz)
+    await setHrefText(link.href, 'urlEnt')
   }
   config.prev = link.href;
   const html = await mapPage(page, link, true)

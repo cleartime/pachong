@@ -48,12 +48,12 @@ export const acfunlogin = async function (option: any = {}) {
   await page.keyboard.type(title);
   console.log('选择分区');
   console.log(tag)
-  const fenqu = await page.$x(
-    '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[4]/div[2]/div/div[1]/input',
+  const fenqu = await page.$(
+    '.article-select-container .el-cascader .el-input__inner',
   );
+  await fenqu.click();
   let cascader1, cascader2
   if (tag === '单机' || tag === '网游') {
-    await fenqu[0].click();
     cascader1 = await page.$x(
       '/html/body/div[4]/div[1]/div[1]/div[1]/ul/li[3]',
     );
@@ -62,7 +62,6 @@ export const acfunlogin = async function (option: any = {}) {
       '/html/body/div[4]/div[1]/div[2]/div[1]/ul/li[1]',
     );
   } if (tag === '动画' || tag === '漫画') {
-    await fenqu[0].click();
     cascader1 = await page.$x(
       '/html/body/div[4]/div[1]/div[1]/div[1]/ul/li[5]',
     );
@@ -71,7 +70,6 @@ export const acfunlogin = async function (option: any = {}) {
       '/html/body/div[4]/div[1]/div[2]/div[1]/ul/li[1]',
     );
   } else {
-    await fenqu[0].click();
     cascader1 = await page.$x(
       '/html/body/div[4]/div[1]/div[1]/div[1]/ul/li[2]',
     );
