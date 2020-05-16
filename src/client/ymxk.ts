@@ -107,6 +107,8 @@ export const getContent = async function () {
     prevHref = await getHrefText('urlNews')
   } else if (config.url === config.urlEnt) {
     prevHref = await getHrefText('urlEnt')
+  } else {
+    prevHref = config.url
   }
   console.log('上一个地址' + prevHref)
   console.log('当前地址' + link.href)
