@@ -105,14 +105,13 @@ export const acfunlogin = async function (option: any = {}) {
     path: '2.png',
     fullPage: true
   });
-  const resul2t = await page.on('response', response => {
+  await page.on('response', response => {
     if (response.url() === config.postArticleApi) {
       response.json().then(function (textBody) {
-        return textBody
+        console.log(textBody)
       });
     }
   });
-  console.log(resul2t)
   await browser.close();
   console.log('关闭acfun网站');
   // debugger

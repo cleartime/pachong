@@ -22,8 +22,10 @@ const mapPage = async function (page, link, frist) {
     let totalPage = ''
     const des = 'div.Mid2L_ctt.block > div.Mid2L_con > p:nth-child(1)';
     const contentClass = 'div.Mid2L_ctt.block > div.Mid2L_con'
-    const localPage = (document.querySelector('.page_css b') as any).innerText;
-    Array.from(document.querySelectorAll('.page_css a')).find((item: any, index, arr) => {
+    const timeClass = 'div.Mid2_L > div.Mid2L_ctt.block > div.Mid2L_tit .detail'
+    const localPage = (document.querySelector('.page_css b') as any) && (document.querySelector('.page_css b') as any).innerText;
+    const time = (document.querySelector(timeClass) as any) && (document.querySelector(timeClass) as any).innerText;
+    document.querySelectorAll('.page_css a') && Array.from(document.querySelectorAll('.page_css a')).find((item: any, index, arr) => {
       if (item.innerHTML === '下一页') {
         hasnextPage = true;
         href = item.href;
@@ -34,6 +36,7 @@ const mapPage = async function (page, link, frist) {
     const content = document.querySelector(contentClass).innerHTML.replace(/游民星空/g, 'Acfun')
     Array.from(document.querySelectorAll('.page_css')).forEach((item) => (item as any).remove())
     return {
+      time,
       localPage,
       totalPage,
       describe,
@@ -42,7 +45,7 @@ const mapPage = async function (page, link, frist) {
       hasnextPage
     };
   });
-  console.log(`（${html.localPage}/${html.totalPage}）`)
+  console.log(`${html.time}（${html.localPage}/${html.totalPage}）`)
   if (!html.des) {
     html.des = html.describe
   }
