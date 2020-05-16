@@ -16,7 +16,7 @@ const config = {
 const mapPage = async function (page, link, frist) {
   if (!link.href) return;
   await page.goto(link.href, { waitUntil: 'domcontentloaded' });
-  const html = await page.evaluate(() => {
+  const html = await page.evaluate((config) => {
     let href = ''
     let hasnextPage = false
     let totalPage = ''
@@ -36,7 +36,7 @@ const mapPage = async function (page, link, frist) {
     const content = document.querySelector(contentClass).innerHTML.replace(/游民星空/g, 'Acfun')
     Array.from(document.querySelectorAll('.page_css')).forEach((item) => (item as any).remove())
     if(config.url === config.urlNews) {
-        Array.from(document.querySelectorAll('a')).forEach((item) => (item as any).remove())
+        Array.from(document.querySelectorAll('a')).forEach((item) => item.remove())
     }
     return {
       time,
@@ -47,7 +47,7 @@ const mapPage = async function (page, link, frist) {
       href,
       hasnextPage
     };
-  });
+  }, config);
   console.log(`${html.time}（${html.localPage}/${html.totalPage}）`)
   if (!html.des) {
     html.des = html.describe
