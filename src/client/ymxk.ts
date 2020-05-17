@@ -34,7 +34,7 @@ const mapPage = async function (page, link, frist) {
     })
     Array.from(document.querySelectorAll('a')).forEach((item) => {
       item.href = ''
-      if(item.innerText.includes('Steam商店链接')){
+      if(item.innerText.includes('Steam商店链接') || item.innerText.includes('地址')){
         item.remove()
       }
     })
