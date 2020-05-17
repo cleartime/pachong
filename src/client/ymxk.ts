@@ -32,9 +32,17 @@ const mapPage = async function (page, link, frist) {
         totalPage = (arr[index - 1] as any).innerText
       }
     })
-    if (config.url === config.urlNews) {
-      Array.from(document.querySelectorAll('a')).forEach((item) => item.href = '')
-    }
+    Array.from(document.querySelectorAll('a')).forEach((item) => {
+      item.href = ''
+      if(item.innerText.includes('Steam商店链接')){
+        item.remove()
+      }
+    })
+    Array.from(document.querySelectorAll('p')).forEach((item) => {
+      if(item.innerText.includes('更多相关资讯请关')){
+        item.remove()
+      }
+    })
     const describe = (document.querySelector(des) as any).innerText.replace(/游民星空/g, 'Acfun')
     const content = document.querySelector(contentClass).innerHTML.replace(/游民星空/g, 'Acfun')
     Array.from(document.querySelectorAll('.page_css')).forEach((item) => (item as any).remove())
