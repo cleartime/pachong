@@ -3,7 +3,58 @@ import { async } from "rxjs/internal/scheduler/async";
 const fs = require("fs");
 const path = require('path')
 const url = path.join(__dirname, '../../public', 'index.html')
+const yxwurl = path.join(__dirname, '../../public', 'yxwIndex.html')
 const apiHref = path.join(__dirname, '../../public', 'apiHref.text')
+const yxwHref = path.join(__dirname, '../../public', 'yxwHref.text')
+
+export const getYXWIndexHtml = async function () {
+  return new Promise(function (resolve, reject) {
+    fs.readFile(yxwurl, (err, data) => {
+      if (!err) {
+        resolve(data)
+      } else {
+        console.log("yxw读取失败");
+      }
+    })
+  })
+}
+
+export const creatYXWIndexHtml = async function (content, frist) {
+  return new Promise(function (resolve, reject) {
+    if (frist) {
+      console.log("yxw清空文件");
+      fs.unlink(yxwurl, function (err) {
+        if (err) {
+          return console.error(err);
+        }
+        fs.writeFile(yxwurl, content, function (err) {
+          console.log("yxw文件新建成功！");
+          if (err) {
+            reject()
+            return console.error(err);
+          }
+          resolve()
+          console.log("yxw数据写入成功！");
+        });
+      });
+    } else {
+      fs.readFile(yxwurl, (err, data) => {
+        if (!err) {
+          fs.writeFile(yxwurl, data + content, function (err) {
+            if (err) {
+              reject()
+              return console.error(err);
+            }
+            resolve()
+            console.log("yxw数据写入成功！");
+          });
+        } else {
+          console.log("yxw数据写入失败！");
+        }
+      })
+    }
+  })
+}
 
 
 
@@ -134,6 +185,38 @@ export const getHrefText = async function (name) {
         resolve(data.toString())
       } else {
         console.log("href数据写入失败！");
+      }
+    })
+  })
+}
+
+
+export const setYXWHrefText = async function (data) {
+  return new Promise(function (resolve, reject) {
+    fs.unlink(yxwHref, function (err) {
+      if (err) {
+        return console.error(err);
+      }
+      fs.writeFile(yxwHref, data, function (err) {
+        if (err) {
+          reject()
+          return console.error(err);
+        }
+        resolve()
+        console.log("yxwurl写入成功！");
+      });
+    });
+  })
+}
+
+
+export const getYXWHrefText = async function () {
+  return new Promise(function (resolve, reject) {
+    fs.readFile(yxwHref, (err, data) => {
+      if (!err) {
+        resolve(data.toString())
+      } else {
+        console.log("yxwhref数据写入失败！");
       }
     })
   })

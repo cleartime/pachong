@@ -1,6 +1,5 @@
 const puppeteer = require('puppeteer');
 import { browserJSON, errorDeal } from './config'
-import { getIndexHtml } from '../file'
 
 const config = {
   account: '17095739373',
@@ -53,7 +52,7 @@ export const acfunlogin = async function (option: any = {}) {
   );
   await fenqu.click();
   let cascader1, cascader2
-  if (tag === '单机' || tag === '网游') {
+  if (tag === '单机' || tag === '网游' || tag.includes('游戏')) {
     cascader1 = await page.$x(
       '/html/body/div[4]/div[1]/div[1]/div[1]/ul/li[3]',
     );
@@ -102,13 +101,12 @@ export const acfunlogin = async function (option: any = {}) {
   await description[0].focus();
   await page.keyboard.type(des.slice(0, 50));
   console.log('输入正文');
-  const indexhtml = await getIndexHtml();
-  await page.evaluate((indexhtml) => {
+  await page.evaluate((content) => {
     const editor = document.querySelector('.ql-editor')
     if (editor) {
-      editor.innerHTML = indexhtml
+      editor.innerHTML = content
     }
-  }, indexhtml.toString());
+  }, content.toString());
   // await editor.focus();
   // await page.keyboard.down('Control');
   // await page.keyboard.down('v');
