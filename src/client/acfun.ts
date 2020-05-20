@@ -60,7 +60,7 @@ export const acfunlogin = async function (option: any = {}) {
     cascader2 = await page.$x(
       '/html/body/div[4]/div[1]/div[2]/div[1]/ul/li[1]',
     );
-  } if (tag === '动画' || tag === '漫画') {
+  } else if (tag === '动画' || tag === '漫画') {
     cascader1 = await page.$x(
       '/html/body/div[4]/div[1]/div[1]/div[1]/ul/li[5]',
     );
@@ -106,12 +106,7 @@ export const acfunlogin = async function (option: any = {}) {
     if (editor) {
       editor.innerHTML = content
     }
-  }, content.toString());
-  // await editor.focus();
-  // await page.keyboard.down('Control');
-  // await page.keyboard.down('v');
-  // await page.keyboard.up('Control');
-  // await page.keyboard.up('v');
+  }, content);
   const submit = await page.$('.article-post-confirm.ivu-btn.ivu-btn-primary');
   await submit.focus();
   await page.screenshot({

@@ -23,13 +23,7 @@ const mapPage = async function (page, link, frist) {
     const time = (document.querySelector(timeClass) as any) && (document.querySelector(timeClass) as any).innerText;
     href = (document.querySelector('.after_this_page') as any) && (document.querySelector('.after_this_page') as any).innerText;
     Array.from(document.querySelectorAll('a')).forEach((item) => {
-      item.href = ''
-      if (item.innerText.includes('共') && item.innerText.includes('页')){
-        totalPage = item.innerText
-      }
-      if(item.innerText.includes('链接') || item.innerText.includes('地址')){
-        item.remove()
-      }
+      item.remove()
     })
     Array.from(document.querySelectorAll('p')).forEach((item) => {
       if(item.innerText.includes('更多相关资讯请关')){
