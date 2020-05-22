@@ -33,10 +33,7 @@ const mapPage = async function (page, link, frist) {
       }
     })
     Array.from(document.querySelectorAll('a')).forEach((item) => {
-      item.href = ''
-      if(item.innerText.includes('Steam商店链接') || item.innerText.includes('地址')){
-        item.remove()
-      }
+      item.remove()
     })
     Array.from(document.querySelectorAll('p')).forEach((item) => {
       if(item.innerText.includes('更多相关资讯请关')){

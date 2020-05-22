@@ -13,4 +13,4 @@ export const errorDeal = function (page, browser) {
     console.log(err);
     await browser.close()
   })
-}
+} 
