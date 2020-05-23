@@ -2,11 +2,10 @@ const schedule = require('node-schedule');
 import { acfunlogin, geekLogin, getContent, getYxwContent } from '../client'
 import { getIndexHtml, getYXWIndexHtml } from '../file'
 
-const initYMXK = async function () {
-  const res = await getContent()
+const initYMXK = async function (option) {
+  const res = await getContent(option)
   try {
-    await getIndexHtml()
-    const content = await getIndexHtml()
+    const content = await getIndexHtml(option)
     if (content) {
       res.content = content.toString();
     }
@@ -29,10 +28,10 @@ const initYxw = async function () {
 }
 
 const init = async function () {
-  initYMXK();
+  initYMXK(false);
   initYxw()
 }
- 
+
 
 export const scheduleCronstyle = async () => {
   // 每分钟的第30秒定时执行一次:
@@ -41,9 +40,14 @@ export const scheduleCronstyle = async () => {
   // init();
   // }); 
   init()
-  const num = 60000 * 5
+  const num1 = 60000 * 5
+  const num2 = 60000 * 15
   setInterval(() => {
     init()
-  }, num)
+  }, num1)
+
+  setInterval(() => {
+    initYMXK(true)
+  }, num2)
 }
 

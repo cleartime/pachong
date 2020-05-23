@@ -3,6 +3,7 @@ import { async } from "rxjs/internal/scheduler/async";
 const fs = require("fs");
 const path = require('path')
 const url = path.join(__dirname, '../../public', 'index.html')
+const ymxkxzurl = path.join(__dirname, '../../public', 'ymxkxzindex.html')
 const yxwurl = path.join(__dirname, '../../public', 'yxwIndex.html')
 const apiHref = path.join(__dirname, '../../public', 'apiHref.text')
 const yxwHref = path.join(__dirname, '../../public', 'yxwHref.text')
@@ -58,9 +59,9 @@ export const creatYXWIndexHtml = async function (content, frist) {
 
 
 
-export const getIndexHtml = async function () {
+export const getIndexHtml = async function (option) {
   return new Promise(function (resolve, reject) {
-    fs.readFile(url, (err, data) => {
+    fs.readFile(option ? ymxkxzurl : url, (err, data) => {
       if (!err) {
         resolve(data)
       } else {
@@ -70,15 +71,15 @@ export const getIndexHtml = async function () {
   })
 }
 
-export const creatIndexHtml = async function (content, frist) {
+export const creatIndexHtml = async function (content, frist, option) {
   return new Promise(function (resolve, reject) {
     if (frist) {
       console.log("清空文件");
-      fs.unlink(url, function (err) {
+      fs.unlink(option ? ymxkxzurl : url, function (err) {
         if (err) {
           return console.error(err);
         }
-        fs.writeFile(url, content, function (err) {
+        fs.writeFile(option ? ymxkxzurl : url, content, function (err) {
           console.log("文件新建成功！");
           if (err) {
             reject()
@@ -89,9 +90,9 @@ export const creatIndexHtml = async function (content, frist) {
         });
       });
     } else {
-      fs.readFile(url, (err, data) => {
+      fs.readFile(option ? ymxkxzurl : url, (err, data) => {
         if (!err) {
-          fs.writeFile(url, data + content, function (err) {
+          fs.writeFile(option ? ymxkxzurl : url, data + content, function (err) {
             if (err) {
               reject()
               return console.error(err);

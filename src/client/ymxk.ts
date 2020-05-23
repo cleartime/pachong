@@ -13,7 +13,7 @@ const config = {
 }
 
 
-const mapPage = async function (page, link, frist) {
+const mapPage = async function (page, link, frist, option) {
   if (!link.href) return;
   await page.goto(link.href, { waitUntil: 'domcontentloaded' });
   const html = await page.evaluate((config) => {
@@ -33,16 +33,19 @@ const mapPage = async function (page, link, frist) {
       }
     })
     Array.from(document.querySelectorAll('a')).forEach((item) => {
-      item.remove()
-    })
-    Array.from(document.querySelectorAll('p')).forEach((item) => {
-      if(item.innerText.includes('更多相关资讯请关')){
+      item.href = ''
+      if(item.innerText.includes('Steam商店链接') || item.innerText.includes('地址')){
         item.remove()
       }
     })
+    Array.from(document.querySelectorAll('p')).forEach((item) => {
+      if (item.innerText.includes('更多相关资讯请关')) {
+        item.remove()
+      }
+    })
+    Array.from(document.querySelectorAll('.page_css')).forEach((item) => (item as any).remove())
     const describe = (document.querySelector(des) as any).innerText.replace(/游民星空/g, 'Acfun')
     const content = document.querySelector(contentClass).innerHTML.replace(/游民星空/g, 'Acfun')
-    Array.from(document.querySelectorAll('.page_css')).forEach((item) => (item as any).remove())
     return {
       time,
       localPage,
@@ -60,13 +63,13 @@ const mapPage = async function (page, link, frist) {
   if (!html.hasnextPage) {
     html.content += '<p><img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040894630third_party_b35465986.png">欢迎关注，收藏，香蕉<img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040895082third_party_b35465992.png"></p>'
   }
-  creatIndexHtml(html.content, frist)
+  await creatIndexHtml(html.content, frist, option)
   if (html.hasnextPage) {
-    await mapPage(page, html, false)
+    await mapPage(page, html, false, option)
   }
   return html
 }
-export const getContent = async function () {
+export const getContent = async function (option) {
   const apiHref: any = await getAPiHrefText();
   config.url = apiHref || config.urlNews;
   console.log('打开ymxk网站');
@@ -75,7 +78,10 @@ export const getContent = async function () {
   errorDeal(page, browser)
   page.setDefaultNavigationTimeout(0)
   await page.setJavaScriptEnabled(true);
-  await page.goto(config.url, { waitUntil: 'domcontentloaded' });
+  if (option) {
+    config.url = config.urlXz
+  }
+  await page.goto(config.urlXz, { waitUntil: 'domcontentloaded' });
   await page.waitFor(1000);
   const link = await page.evaluate((config) => {
     let title, href, tag, id;
@@ -85,14 +91,14 @@ export const getContent = async function () {
       tag = '福利'
       id = href.match(/\d+/g).join()
     }
-    if (config.url === config.urlNews) {
+    else if (config.url === config.urlNews) {
       title = document.querySelector('body > div.Mid > div.Mid2 > div.Mid2_L > div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
       href = document.querySelector('body > div.Mid > div.Mid2 > div.Mid2_L > div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.tt').getAttribute('href')
       tag = document.querySelector('body > div.Mid > div.Mid2 > div.Mid2_L > div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.dh').innerHTML
       id = href.match(/\d+/g).join()
 
     }
-    if (config.url === config.urlEnt) {
+    else if (config.url === config.urlEnt) {
       title = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
       href = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.tt').getAttribute('href')
       tag = document.querySelector('div.Mid2_L ul > li:nth-child(2) > div.tit > a.dh').innerHTML
@@ -118,18 +124,20 @@ export const getContent = async function () {
   console.log('当前分类' + config.url)
   console.log('上一个地址' + prevHref)
   console.log('当前地址' + link.href)
-  if (prevHref === link.href) {
-    if (config.url === config.urlXz) {
-      await setAPiHrefText(config.urlNews)
-    } else if (config.url === config.urlNews) {
-      await setAPiHrefText(config.urlEnt)
-    } else if (config.url === config.urlEnt) {
-      await setAPiHrefText(config.urlXz)
-    }
-    await browser.close();
-    console.log('关闭ymxk网站');
-    return
-  };
+  if (!option) {
+    if (prevHref === link.href) {
+      if (config.url === config.urlXz) {
+        await setAPiHrefText(config.urlNews)
+      } else if (config.url === config.urlNews) {
+        await setAPiHrefText(config.urlEnt)
+      } else if (config.url === config.urlEnt) {
+        await setAPiHrefText(config.urlXz)
+      }
+      await browser.close();
+      console.log('关闭ymxk网站');
+      return
+    };
+  }
   if (link.tag === '专栏') {
     await browser.close();
     console.log('关闭ymxk网站');
@@ -144,7 +152,7 @@ export const getContent = async function () {
     await setHrefText(link.href, 'urlEnt')
   }
   config.prev = link.href;
-  const html = await mapPage(page, link, true)
+  const html = await mapPage(page, link, true, option)
   // await openIndexHtml(page)
   await browser.close();
   console.log('关闭ymxk网站');
