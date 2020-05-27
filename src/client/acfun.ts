@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 import { browserJSON, errorDeal } from './config'
+import { interceptedRequest } from '../until/index'
 
 const config = {
   account: '17095739373',
@@ -33,7 +34,6 @@ export const acfunlogin = async function (option: any = {}) {
   console.log('登录');
   await page.waitFor(5000);
   await page.goto(config.articleUrl, { waitUntil: 'domcontentloaded' });
-
   await page.keyboard.down('Control');
   await page.keyboard.down('A');
   await page.keyboard.up('Control');
@@ -113,20 +113,26 @@ export const acfunlogin = async function (option: any = {}) {
     path: '1.png',
     fullPage: true
   });
+  await page.setRequestInterception(true);
+  
+  interceptedRequest(page, config.postArticleApi, function(json){
+    json.title = 'sdafdsf'
+    return json
+  })
   await submit.click();
   console.log('发布');
   await page.screenshot({
     path: '2.png',
     fullPage: true
   });
-  await page.on('response', response => {
-    if (response.url() === config.postArticleApi) {
-      response.json().then(function (textBody) {
-        console.log(textBody)
-      });
-    }
-  });
-  await browser.close();
+  // await page.on('response', response => {
+  //   if (response.url() === config.channelUrl) {
+  //     response.json().then(function (textBody) {
+  //       console.log(textBody)
+  //     });
+  //   }
+  // });
+  // await browser.close();
   console.log('关闭acfun网站');
   // debugger
 };
