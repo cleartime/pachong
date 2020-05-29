@@ -3,7 +3,7 @@ export const browserJSON = {
   ignoreDefaultArgs: ['--disable-extensions', '--enable-automation'],
   ignoreHTTPSErrors: true,
   headless: false,
-  devtools: true,
+  devtools: false,
   slowMo: 250,
   timeout: 0,
 }
