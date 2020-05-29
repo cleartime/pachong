@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
-import { browserJSON, errorDeal } from './config'
-import { interceptedRequest } from '../until/index'
+import { browserJSON, errorDeal } from './config';
+import { interceptedRequest } from '../until/index';
+import { setChannelId } from '../until/acfun';
 
 const config = {
   account: '17095739373',
@@ -11,9 +12,9 @@ const config = {
   postArticleApi: 'https://member.acfun.cn/article/api/postArticle',
 };
 
-export const acfunlogin = async function (option: any = {}) {
+export const acfunlogin = async function(option: any = {}) {
   const { title = '', des = '', content = '', id = '', tag } = option;
-  if (!id) return
+  if (!id) return;
   console.log('打开acfun网站');
   const browser = await puppeteer.launch(browserJSON);
   const page = await browser.newPage();
@@ -34,24 +35,27 @@ export const acfunlogin = async function (option: any = {}) {
   console.log('登录');
   await page.waitFor(5000);
   await page.goto(config.articleUrl, { waitUntil: 'domcontentloaded' });
-  await page.keyboard.down('Control');
-  await page.keyboard.down('A');
-  await page.keyboard.up('Control');
-  await page.keyboard.up('C');
-
+  let channelList = null;
+  await page.on('response', response => {
+    if (response.url() === config.channelUrl) {
+      response.json().then(function(textBody) {
+        channelList = textBody;
+      });
+    }
+  });
   console.log('输入标题');
   const tit = await page.$x(
     '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[1]/div[2]/div[2]/div/div[1]/input',
   );
   await tit[0].focus();
-  await page.keyboard.type(title);
+  await page.keyboard.type('1');
   console.log('选择分区');
-  console.log(tag)
+  console.log(tag);
   const fenqu = await page.$(
     '.article-select-container .el-cascader .el-input__inner',
   );
   await fenqu.click();
-  let cascader1, cascader2
+  let cascader1, cascader2;
   if (tag === '单机' || tag === '网游' || tag.includes('游戏')) {
     cascader1 = await page.$x(
       '/html/body/div[4]/div[1]/div[1]/div[1]/ul/li[3]',
@@ -101,37 +105,34 @@ export const acfunlogin = async function (option: any = {}) {
   await description[0].focus();
   await page.keyboard.type(des.slice(0, 50));
   console.log('输入正文');
-  await page.evaluate((content) => {
-    const editor = document.querySelector('.ql-editor')
+  await page.evaluate(content => {
+    const editor = document.querySelector('.ql-editor');
     if (editor) {
-      editor.innerHTML = content
+      editor.innerHTML = content;
     }
   }, content);
   const submit = await page.$('.article-post-confirm.ivu-btn.ivu-btn-primary');
   await submit.focus();
   await page.screenshot({
     path: '1.png',
-    fullPage: true
+    fullPage: true,
   });
   await page.setRequestInterception(true);
-  
-  interceptedRequest(page, config.postArticleApi, function(json){
-    json.title = 'sdafdsf'
-    return json
-  })
+
+  interceptedRequest(page, config.postArticleApi, function(json) {
+    const channel = setChannelId(channelList, tag);
+    json.channelId = channel.channelId;
+    json.realmId = channel.realmId;
+    json.title = title;
+    return json;
+  });
   await submit.click();
   console.log('发布');
   await page.screenshot({
     path: '2.png',
-    fullPage: true
+    fullPage: true,
   });
-  // await page.on('response', response => {
-  //   if (response.url() === config.channelUrl) {
-  //     response.json().then(function (textBody) {
-  //       console.log(textBody)
-  //     });
-  //   }
-  // });
+
   // await browser.close();
   console.log('关闭acfun网站');
   // debugger
