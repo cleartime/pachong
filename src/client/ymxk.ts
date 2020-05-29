@@ -81,7 +81,7 @@ export const getContent = async function (option) {
   if (option) {
     config.url = config.urlXz
   }
-  await page.goto(config.urlXz, { waitUntil: 'domcontentloaded' });
+  await page.goto(config.url, { waitUntil: 'domcontentloaded' });
   await page.waitFor(1000);
   const link = await page.evaluate((config) => {
     let title, href, tag, id;
