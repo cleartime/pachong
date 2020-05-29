@@ -49,7 +49,7 @@ export const acfunlogin = async function (option: any = {}) {
     '/html/body/div[1]/div[2]/div[2]/div/div/div/form/div[1]/div[2]/div[2]/div/div[1]/input',
   );
   await tit[0].focus();
-  await page.keyboard.type('1');
+  await page.keyboard.type(title);
   console.log('选择分区');
   console.log(tag);
   const fenqu = await page.$(
