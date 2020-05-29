@@ -2,7 +2,6 @@ const puppeteer = require('puppeteer');
 import { browserJSON, errorDeal } from './config';
 import { interceptedRequest } from '../until/index';
 import { getChannelId } from '../until/acfun';
-import { async } from 'rxjs/internal/scheduler/async';
 
 const config = {
   account: '17095739373',
@@ -120,10 +119,10 @@ export const acfunlogin = async function (option: any = {}) {
   //   json.title = title;
   //   return json;
   // });
-  // await submit.click();
+  await submit.click();
   console.log('发布');
 
-  // await browser.close();
+  await browser.close();
   console.log('关闭acfun网站');
   // debugger
 };
