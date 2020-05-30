@@ -27,15 +27,24 @@ export const setChannelId = function (data, name) {
 
 export const getChannelId = function (data, title) {
   let _title = JSON.parse(JSON.stringify(title));
-  if (_title.includes('单机') || _title.includes('Steam') || _title.includes('索尼') || _title.includes('PS5') || _title.includes('PS4') || _title.includes('任天堂')) {
-    _title = '游戏杂谈'
-  }
-  if (_title.includes('lol') || _title.includes('lpl')) {
-    _title = '英雄联盟'
-  }
-  if (_title.includes('手游')) {
-    _title = '手机游戏'
-  }
+  let danjiArr = ['单机', 'Steam', '索尼', 'xbox', 'PS5', 'PS4', '任天堂', 'SWTICH', 'Stadia', '玩家', 'game'];
+  let shouyouArr = ['手游'];
+  let lolArr = ['lol', 'lpl', 'lck'];
+  danjiArr.forEach(item => {
+    if (_title.includes(item)) {
+      _title = '游戏杂谈'
+    }
+  })
+  lolArr.forEach(item => {
+    if (_title.includes(item)) {
+      _title = '英雄联盟'
+    }
+  })
+  shouyouArr.forEach(item => {
+    if (_title.includes(item)) {
+      _title = '手机游戏'
+    }
+  })
   const result = {
     channelIdIndex: 0,
     realmIdIndex: 0

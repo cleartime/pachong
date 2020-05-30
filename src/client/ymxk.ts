@@ -113,7 +113,7 @@ export const getContent = async function (option) {
   }, config);
   let prevHref
   if (config.url === config.urlXz) {
-    prevHref = await getHrefText('urlXz')
+    prevHref = await getHrefText('urlNews')
   } else if (config.url === config.urlNews) {
     prevHref = await getHrefText('urlNews')
   } else if (config.url === config.urlEnt) {

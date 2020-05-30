@@ -106,10 +106,10 @@ export const acfunlogin = async function (option: any = {}) {
   }, content);
   const submit = await page.$('.article-post-confirm.ivu-btn.ivu-btn-primary');
   await submit.focus();
-  // await page.screenshot({
-  //   path: '1.png',
-  //   fullPage: true,
-  // });
+  await page.screenshot({
+    path: '1.png',
+    fullPage: true,
+  });
   // await page.setRequestInterception(true);
 
   // interceptedRequest(page, config.postArticleApi, function(json) {
@@ -121,7 +121,10 @@ export const acfunlogin = async function (option: any = {}) {
   // });
   await submit.click();
   console.log('发布');
-
+  await page.screenshot({
+    path: '2.png',
+    fullPage: true,
+  });
   await browser.close();
   console.log('关闭acfun网站');
   // debugger
