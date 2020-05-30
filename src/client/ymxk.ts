@@ -5,7 +5,7 @@ import { browserJSON, errorDeal } from './config'
 
 const config = {
   url: '',
-  urlXz: 'https://www.gamersky.com/ent/xz/',
+  urlXz: 'https://www.gamersky.com/ent/news/',
   urlNews: 'https://www.gamersky.com/news/',
   urlEnt: 'https://www.gamersky.com/ent/',
   tag: '综合',
@@ -113,7 +113,7 @@ export const getContent = async function (option) {
   }, config);
   let prevHref
   if (config.url === config.urlXz) {
-    prevHref = await getHrefText('urlNews')
+    prevHref = await getHrefText('urlXz')
   } else if (config.url === config.urlNews) {
     prevHref = await getHrefText('urlNews')
   } else if (config.url === config.urlEnt) {
