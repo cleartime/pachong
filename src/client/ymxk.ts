@@ -5,7 +5,7 @@ import { browserJSON, errorDeal } from './config'
 
 const config = {
   url: '',
-  urlXz: 'https://www.gamersky.com/ent/news/',
+  urlXz: 'https://www.gamersky.com/ent/',
   urlNews: 'https://www.gamersky.com/news/',
   urlEnt: 'https://www.gamersky.com/ent/',
   tag: '综合',
@@ -78,20 +78,11 @@ export const getContent = async function (option) {
   errorDeal(page, browser)
   page.setDefaultNavigationTimeout(0)
   await page.setJavaScriptEnabled(true);
-  if (option) {
-    config.url = config.urlXz
-  }
   await page.goto(config.url, { waitUntil: 'domcontentloaded' });
   await page.waitFor(1000);
   const link = await page.evaluate((config) => {
     let title, href, tag, id;
-    if (config.url === config.urlXz) {
-      title = document.querySelector('div.Mid2_L > ul > li:nth-child(1) > div.con > div.tit > a').innerHTML.replace(/游民星空/g, 'Acfun')
-      href = document.querySelector('div.Mid2_L > ul > li:nth-child(1) > div.con > div.tit > a').getAttribute('href')
-      tag = '福利'
-      id = href.match(/\d+/g).join()
-    }
-    else if (config.url === config.urlNews) {
+    if (config.url === config.urlNews) {
       title = document.querySelector('body > div.Mid > div.Mid2 > div.Mid2_L > div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.tt').innerHTML.replace(/游民星空/g, 'Acfun')
       href = document.querySelector('body > div.Mid > div.Mid2 > div.Mid2_L > div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.tt').getAttribute('href')
       tag = document.querySelector('body > div.Mid > div.Mid2 > div.Mid2_L > div.Mid2L_con.block > ul > li:nth-child(1) > div.tit > a.dh').innerHTML
@@ -112,9 +103,7 @@ export const getContent = async function (option) {
     };
   }, config);
   let prevHref
-  if (config.url === config.urlXz) {
-    prevHref = await getHrefText('urlXz')
-  } else if (config.url === config.urlNews) {
+ if (config.url === config.urlNews) {
     prevHref = await getHrefText('urlNews')
   } else if (config.url === config.urlEnt) {
     prevHref = await getHrefText('urlEnt')
@@ -126,12 +115,10 @@ export const getContent = async function (option) {
   console.log('当前地址' + link.href)
   if (!option) {
     if (prevHref === link.href) {
-      if (config.url === config.urlXz) {
-        await setAPiHrefText(config.urlNews)
-      } else if (config.url === config.urlNews) {
+      if (config.url === config.urlNews) {
         await setAPiHrefText(config.urlEnt)
       } else if (config.url === config.urlEnt) {
-        await setAPiHrefText(config.urlXz)
+        await setAPiHrefText(config.urlNews)
       }
       await browser.close();
       console.log('关闭ymxk网站');
@@ -144,9 +131,7 @@ export const getContent = async function (option) {
     return
   };
   console.log('当前标题是：' + link.title)
-  if (config.url === config.urlXz) {
-    await setHrefText(link.href, 'urlXz')
-  } else if (config.url === config.urlNews) {
+  if (config.url === config.urlNews) {
     await setHrefText(link.href, 'urlNews')
   } else if (config.url === config.urlEnt) {
     await setHrefText(link.href, 'urlEnt')

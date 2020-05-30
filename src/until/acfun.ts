@@ -30,6 +30,7 @@ export const getChannelId = function (data, title) {
   let danjiArr = ['单机', 'Steam', '索尼', 'xbox', 'PS5', 'PS4', '任天堂', 'SWTICH', 'Stadia', '玩家', 'game'];
   let shouyouArr = ['手游'];
   let lolArr = ['lol', 'lpl', 'lck'];
+  let mietuArr = ['桌面截图'];
   danjiArr.forEach(item => {
     if (_title.includes(item)) {
       _title = '游戏杂谈'
@@ -43,6 +44,11 @@ export const getChannelId = function (data, title) {
   shouyouArr.forEach(item => {
     if (_title.includes(item)) {
       _title = '手机游戏'
+    }
+  })
+  mietuArr.forEach(item => {
+    if (_title.includes(item)) {
+      _title = '美图分享'
     }
   })
   const result = {
