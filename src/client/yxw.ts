@@ -44,7 +44,7 @@ const mapPage = async function (page, link, frist) {
   }, config);
   console.log(`${html.time}（${html.localPage}/${html.totalPage}）`)
   if (!html.hasnextPage) {
-    html.content += '<p><img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040894630third_party_b35465986.png">欢迎关注，收藏，香蕉<img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040895082third_party_b35465992.png"></p>'
+    html.content += '<p>来源：搜狐网</p><p><img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040894630third_party_b35465986.png">欢迎关注，收藏，香蕉<img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040895082third_party_b35465992.png"></p>'
   }
   creatYXWIndexHtml(html.content, frist)
   if (html.hasnextPage) {

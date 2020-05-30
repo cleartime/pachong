@@ -57,7 +57,7 @@ export const acfunlogin = async function (option: any = {}) {
   );
   await fenqu.click();
   let cascader1, cascader2;
-  const { channelIdIndex, realmIdIndex } = getChannelId(channelList[0].children, title)
+  const { channelIdIndex, realmIdIndex } = getChannelId(channelList[0].children, des + title + tag)
   cascader1 = await page.$x(
     `/html/body/div[4]/div[1]/div[1]/div[1]/ul/li[${channelIdIndex + 1}]`,
   );
@@ -79,16 +79,16 @@ export const acfunlogin = async function (option: any = {}) {
   const tagName = getRecommTagApi && getRecommTagApi.recommend
   const tag1 = await page.$('.video-input-box-val');
   await tag1.focus();
-  await tag1.type(tagName && tagName[tagName.length-1].tagName || '搞笑');
+  await tag1.type(tagName && tagName[tagName.length - 1].tagName || '搞笑');
   await page.keyboard.down('Enter');
   await page.keyboard.up('Enter');
-  await tag1.type(tagName && tagName[tagName.length-2].tagName || '搞笑');
+  await tag1.type(tagName && tagName[tagName.length - 2].tagName || '搞笑');
   await page.keyboard.down('Enter');
   await page.keyboard.up('Enter');
-  await tag1.type(tagName && tagName[tagName.length-3].tagName || '搞笑');
+  await tag1.type(tagName && tagName[tagName.length - 3].tagName || '搞笑');
   await page.keyboard.down('Enter');
   await page.keyboard.up('Enter');
-  await tag1.type(tagName && tagName[tagName.length-4].tagName || tag);
+  await tag1.type(tagName && tagName[tagName.length - 4].tagName || tag);
   await page.keyboard.down('Enter');
   await page.keyboard.up('Enter');
   console.log('输入简介');
