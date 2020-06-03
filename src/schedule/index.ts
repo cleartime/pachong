@@ -26,22 +26,22 @@ const initYxw = async function () {
 
 const init = async function () {
   initYMXK(false);
-  initYxw();
+  // initYxw();
 };
 
 export const scheduleCronstyle = async () => {
   // 每分钟的第30秒定时执行一次:
   // schedule.scheduleJob('60 * * * * *',()=>{
   init()
-  const num1 = 60000 * 5
+  const num1 = 60000 * 2
   const num2 = 60000 * 15
   setInterval(() => {
     init()
   }, num1)
 
-  setInterval(() => {
-    initYMXK(true)
-  }, num2)
+  // setInterval(() => {
+  //   initYMXK(true)
+  // }, num2)
 
   // setInterval(() => {
   //   initYMXK(true)
