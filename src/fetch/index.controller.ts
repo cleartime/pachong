@@ -1,13 +1,16 @@
 import { Controller, Get, Query, Post, Body, Param } from '@nestjs/common';
 import { IndexService } from './index.service';
-import { login } from '../client/index';
-import { from } from 'rxjs';
+import { acfunlogin, geekLogin } from '../client/index';
 @Controller('fetch')
 export class IndexController {
   constructor(private indexService: IndexService) {}
-  @Post('login')
+  @Post('geekLogin')
+  geekhublogin() {
+    geekLogin();
+  }
+  @Post('acfunlogin')
   login() {
-    login();
+    acfunlogin();
   }
   @Get()
   findAll() {
