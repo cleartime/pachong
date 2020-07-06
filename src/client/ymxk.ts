@@ -86,7 +86,7 @@ const mapPage = async function(page, link, frist, option) {
   }
   if (!html.hasnextPage) {
     html.content +=
-      '<p>来源：搜狐网</p><p><img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040894630third_party_b35465986.png">大哥大嫂过年好，欢迎大家投香蕉<img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040895082third_party_b35465992.png"></p>';
+      '<p>来源：游民星空，地址：'+link.href+'</p><p><img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040894630third_party_b35465986.png">大哥大嫂过年好，欢迎大家投香蕉<img style="max-width: 700px" class="emotion-icon ubb-emotion" src="https://ali2.a.yximgs.com/bs2/emotion/1587040895082third_party_b35465992.png"></p>';
   }
   await creatIndexHtml(html.content, frist, option);
   if (html.hasnextPage) {
