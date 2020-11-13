@@ -63,6 +63,9 @@ const mapPage = async function(page, link, frist, option) {
     Array.from(document.querySelectorAll('.page_css')).forEach(item =>
       (item as any).remove(),
     );
+    Array.from(document.querySelectorAll('img')).forEach(item => {
+        item.remove();
+    });
     const describe = (document.querySelector(des) as any).innerText.replace(
       /游民星空/g,
       'Acfun',

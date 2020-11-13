@@ -30,6 +30,9 @@ const mapPage = async function (page, link, frist) {
         item.remove()
       }
     })
+    Array.from(document.querySelectorAll('img')).forEach(item => {
+        item.remove();
+    });
     const content = document.querySelector(contentClass).innerHTML.replace(/游侠网/g, 'Acfun')
     Array.from(document.querySelectorAll('.page_fenye')).forEach((item) => (item as any).remove())
     Array.from(document.querySelectorAll('.n_show_b')).forEach((item) => (item as any).remove())
