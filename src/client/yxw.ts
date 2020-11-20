@@ -34,7 +34,7 @@ const mapPage = async function (page, link, frist) {
         item.remove();
     });
     Array.from(document.querySelectorAll('br')).forEach(item => {
-        item.parentNode.remove();
+        (item.parentNode as any).remove();
     });
     const content = document.querySelector(contentClass).innerHTML.replace(/游侠网/g, 'Acfun')
     Array.from(document.querySelectorAll('.page_fenye')).forEach((item) => (item as any).remove())
